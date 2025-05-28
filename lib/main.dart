@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pat_asl_portal/ui/screen/authentiation_screen/login.dart';
+import 'package:pat_asl_portal/screen/login/login_screen.dart';
 import 'package:pat_asl_portal/util/theme/app_color.dart';
 
 class MainScreen extends StatelessWidget {
@@ -30,6 +30,7 @@ class MainScreen extends StatelessWidget {
           ),
         ),
       ),
+      // home: const NavigatorMenu(),
       home: const LoginScreen(),
     );
   }

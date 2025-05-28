@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../screen/app_screen/home_screen.dart';
+import '../home/home_screen.dart';
 
 class NavigatorMenu extends StatelessWidget {
   const NavigatorMenu({super.key});
