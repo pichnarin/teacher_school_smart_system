@@ -1,48 +1,32 @@
 import 'package:equatable/equatable.dart';
-import 'login_event.dart';
 
 class LoginState extends Equatable {
-  final LoginMethod loginMethod;
-  final bool isVerificationStep;
-  final String? email;
-  final String? phone;
   final bool isLoading;
-  final String? error;
+  final bool isOTPRequired;
+  final String? errorMessage;
+  final String? email;
 
   const LoginState({
-    this.loginMethod = LoginMethod.email,
-    this.isVerificationStep = false,
-    this.email,
-    this.phone,
     this.isLoading = false,
-    this.error,
+    this.isOTPRequired = false,
+    this.errorMessage,
+    this.email,
   });
 
   LoginState copyWith({
-    LoginMethod? loginMethod,
-    bool? isVerificationStep,
-    String? email,
-    String? phone,
     bool? isLoading,
-    String? error,
+    bool? isOTPRequired,
+    String? errorMessage,
+    String? email,
   }) {
     return LoginState(
-      loginMethod: loginMethod ?? this.loginMethod,
-      isVerificationStep: isVerificationStep ?? this.isVerificationStep,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      isOTPRequired: isOTPRequired ?? this.isOTPRequired,
+      errorMessage: errorMessage,
+      email: email ?? this.email,
     );
   }
 
   @override
-  List<Object?> get props => [
-    loginMethod,
-    isVerificationStep,
-    email,
-    phone,
-    isLoading,
-    error,
-  ];
+  List<Object?> get props => [isLoading, isOTPRequired, errorMessage, email];
 }

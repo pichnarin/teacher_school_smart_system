@@ -4,69 +4,54 @@ import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(const LoginState()) {
-    on<LoginMethodChanged>(_onLoginMethodChanged);
-    on<SendVerificationCodePressed>(_onSendVerificationCodePressed);
-    on<VerifyCodePressed>(_onVerifyCodePressed);
-    on<ResendCodePressed>(_onResendCodePressed);
-    on<GoBackPressed>(_onGoBackPressed);
+    on<LoginSubmitted>(_onLoginSubmitted);
+    on<OTPSubmitted>(_onOTPSubmitted);
+    on<ResendOTP>(_onResendOTP);
   }
 
-  void _onLoginMethodChanged(
-      LoginMethodChanged event, Emitter<LoginState> emit) {
-    emit(state.copyWith(loginMethod: event.method));
-  }
+  void _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
-  void _onSendVerificationCodePressed(
-      SendVerificationCodePressed event, Emitter<LoginState> emit) {
-    // Validate input
-    if (event.method == LoginMethod.email) {
-      final emailRegex = RegExp(
-          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-      if (!emailRegex.hasMatch(event.input)) {
-        emit(state.copyWith(error: 'Please enter a valid email address'));
-        return;
-      }
+    await Future.delayed(const Duration(seconds: 1)); // Simulate API
+
+    // Validate
+    if (event.input.isEmpty || event.password.length < 6) {
       emit(state.copyWith(
-        email: event.input,
-        isVerificationStep: true,
-        error: null,
+        isLoading: false,
+        errorMessage: 'Invalid email/username or password',
       ));
-    } else {
-      if (event.input.isEmpty || event.input.length < 10) {
-        emit(state.copyWith(error: 'Please enter a valid phone number'));
-        return;
-      }
-      emit(state.copyWith(
-        phone: event.input,
-        isVerificationStep: true,
-        error: null,
-      ));
-    }
-
-    // TODO: Add API call to send verification code
-  }
-
-  void _onVerifyCodePressed(
-      VerifyCodePressed event, Emitter<LoginState> emit) {
-    // Validate code
-    if (event.code.length != 6 || int.tryParse(event.code) == null) {
-      emit(state.copyWith(error: 'Please enter all 6 digits'));
       return;
     }
 
-    emit(state.copyWith(isLoading: true, error: null));
-
-    // TODO: Add API call to verify code
-
-    // Navigate will be handled in UI
+    // Simulate successful login, OTP required
+    emit(state.copyWith(
+      isLoading: false,
+      isOTPRequired: true,
+      email: event.input,
+    ));
   }
 
-  void _onResendCodePressed(
-      ResendCodePressed event, Emitter<LoginState> emit) {
-    // TODO: Add API call to resend code
+  void _onOTPSubmitted(OTPSubmitted event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+
+    await Future.delayed(const Duration(seconds: 1)); // Simulate API
+
+    if (event.code != '123456') {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: 'Invalid OTP code',
+      ));
+    } else {
+      emit(state.copyWith(isLoading: false));
+      // Navigate to home (UI will handle this)
+    }
   }
 
-  void _onGoBackPressed(GoBackPressed event, Emitter<LoginState> emit) {
-    emit(state.copyWith(isVerificationStep: false));
+  void _onResendOTP(ResendOTP event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    await Future.delayed(const Duration(seconds: 1)); // Simulate resend
+
+    emit(state.copyWith(isLoading: false));
   }
 }

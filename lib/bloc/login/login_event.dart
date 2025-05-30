@@ -7,36 +7,23 @@ abstract class LoginEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoginMethodChanged extends LoginEvent {
-  final LoginMethod method;
+class LoginSubmitted extends LoginEvent {
+  final String input; // email or username
+  final String password;
 
-  const LoginMethodChanged(this.method);
-
-  @override
-  List<Object?> get props => [method];
-}
-
-class SendVerificationCodePressed extends LoginEvent {
-  final String input;
-  final LoginMethod method;
-
-  const SendVerificationCodePressed({required this.input, required this.method});
+  const LoginSubmitted(this.input, this.password);
 
   @override
-  List<Object?> get props => [input, method];
+  List<Object?> get props => [input, password];
 }
 
-class VerifyCodePressed extends LoginEvent {
+class OTPSubmitted extends LoginEvent {
   final String code;
 
-  const VerifyCodePressed(this.code);
+  const OTPSubmitted(this.code);
 
   @override
   List<Object?> get props => [code];
 }
 
-class ResendCodePressed extends LoginEvent {}
-
-class GoBackPressed extends LoginEvent {}
-
-enum LoginMethod { email, phone }
+class ResendOTP extends LoginEvent {}
