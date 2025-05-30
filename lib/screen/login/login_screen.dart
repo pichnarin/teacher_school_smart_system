@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/login/login_bloc.dart';
-import '../../bloc/login/login_event.dart';
-import '../../bloc/login/login_state.dart';
+import '../../bloc/auth/auth_bloc.dart';
+import '../../bloc/auth/auth_state.dart';
+import '../../bloc/auth/auth_event.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,17 +15,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final inputController = TextEditingController();
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final List<TextEditingController> otpControllers = List.generate(
     6,
-    (_) => TextEditingController(),
+        (_) => TextEditingController(),
   );
   final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
+  String _lastUsername = '';
+  String _lastPassword = '';
 
   @override
   void dispose() {
-    inputController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
     for (final controller in otpControllers) {
       controller.dispose();
@@ -36,46 +40,53 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LoginBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Login'),
-          centerTitle: true,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-        body: SafeArea(
-          child: BlocConsumer<LoginBloc, LoginState>(
-            listener: (context, state) {
-              if (state.errorMessage != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.errorMessage!),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            builder: (context, state) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child:
-                      state.isOTPRequired
-                          ? _buildOTPForm(context, state)
-                          : _buildLoginForm(context, state),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
+      body: SafeArea(
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state.errorMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage!),
+                  behavior: SnackBarBehavior.floating,
                 ),
               );
-            },
-          ),
+            }
+
+            if (state.isAuthenticated) {
+              // Navigate to home screen or dashboard
+              // Navigator.of(context).pushReplacementNamed('/home');
+            }
+
+            // Save credentials for potential OTP resend
+            if (state.isAwaitingOtp && _lastUsername.isEmpty) {
+              _lastUsername = usernameController.text;
+              _lastPassword = passwordController.text;
+            }
+          },
+          builder: (context, state) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: state.isAwaitingOtp
+                    ? _buildOTPForm(context, state)
+                    : _buildLoginForm(context, state),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildLoginForm(BuildContext context, LoginState state) {
+  Widget _buildLoginForm(BuildContext context, AuthState state) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
@@ -83,6 +94,15 @@ class _LoginScreenState extends State<LoginScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 32),
+        Image.asset(
+          'assets/images/education_logo.png',
+          height: 80,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(Icons.school, size: 80);
+          },
+        ),
+        const SizedBox(height: 24),
         Text(
           'Welcome Back',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -93,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
         const SizedBox(height: 8),
         Text(
           'Sign in to continue',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 32),
         TextField(
-          controller: inputController,
+          controller: usernameController,
           decoration: InputDecoration(
             labelText: 'Email or Username',
             prefixIcon: const Icon(Icons.person_outline_rounded),
@@ -125,17 +145,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 24),
         FilledButton(
-          onPressed:
-              state.isLoading
-                  ? null
-                  : () {
-                    context.read<LoginBloc>().add(
-                      LoginSubmitted(
-                        inputController.text,
-                        passwordController.text,
-                      ),
-                    );
-                  },
+          onPressed: state.isLoading
+              ? null
+              : () {
+            context.read<AuthBloc>().add(
+              LoginInitiated(
+                usernameController.text,
+                passwordController.text,
+              ),
+            );
+          },
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
@@ -143,29 +162,34 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             disabledBackgroundColor: colorScheme.primary.withOpacity(0.3),
           ),
-          child:
-              state.isLoading
-                  ? SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: colorScheme.onPrimary,
-                    ),
-                  )
-                  : const Text('Login'),
+          child: state.isLoading
+              ? SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: colorScheme.onPrimary,
+            ),
+          )
+              : const Text('Login'),
         ),
       ],
     );
   }
 
-  Widget _buildOTPForm(BuildContext context, LoginState state) {
+  Widget _buildOTPForm(BuildContext context, AuthState state) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       key: const ValueKey('otp_form'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const SizedBox(height: 24),
+        Image.asset(
+          'assets/images/education_logo.png',
+          height: 80,
+          fit: BoxFit.contain,
+        ),
         const SizedBox(height: 24),
         Text(
           'Verification',
@@ -183,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          '${state.email ?? "your email"}',
+          state.pendingEmail ?? "your email",
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
@@ -229,7 +253,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (index == 5 && value.isNotEmpty) {
                     final code = otpControllers.map((c) => c.text).join();
                     if (code.length == 6) {
-                      context.read<LoginBloc>().add(OTPSubmitted(code));
+                      context.read<AuthBloc>().add(
+                        OTPVerificationRequested(
+                          state.pendingUsername ?? '',
+                          code,
+                        ),
+                      );
                     }
                   }
                 },
@@ -239,13 +268,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 32),
         FilledButton(
-          onPressed:
-              state.isLoading
-                  ? null
-                  : () {
-                    final code = otpControllers.map((c) => c.text).join();
-                    context.read<LoginBloc>().add(OTPSubmitted(code));
-                  },
+          onPressed: state.isLoading
+              ? null
+              : () {
+            final code = otpControllers.map((c) => c.text).join();
+            context.read<AuthBloc>().add(
+              OTPVerificationRequested(
+                state.pendingUsername ?? '',
+                code,
+              ),
+            );
+          },
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
@@ -253,26 +286,29 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             disabledBackgroundColor: colorScheme.primary.withOpacity(0.3),
           ),
-          child:
-              state.isLoading
-                  ? SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: colorScheme.onPrimary,
-                    ),
-                  )
-                  : const Text('Verify'),
+          child: state.isLoading
+              ? SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: colorScheme.onPrimary,
+            ),
+          )
+              : const Text('Verify'),
         ),
         const SizedBox(height: 8),
         TextButton(
-          onPressed:
-              state.isLoading
-                  ? null
-                  : () {
-                    context.read<LoginBloc>().add(ResendOTP());
-                  },
+          onPressed: state.isLoading
+              ? null
+              : () {
+            context.read<AuthBloc>().add(
+              ResendOTPRequested(
+                state.pendingUsername ?? _lastUsername,
+                _lastPassword,
+              ),
+            );
+          },
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
