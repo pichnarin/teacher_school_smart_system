@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../bloc/auth/auth_state.dart';
 import '../../bloc/auth/auth_event.dart';
+import '../navigator/navigator_menu.dart';
 
 
 
@@ -60,8 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
             }
 
             if (state.isAuthenticated) {
-              // Navigate to home screen or dashboard
-              // Navigator.of(context).pushReplacementNamed('/home');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const NavigatorMenu()),
+              );
             }
 
             // Save credentials for potential OTP resend
@@ -189,6 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
           'assets/images/education_logo.png',
           height: 80,
           fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(Icons.school, size: 80);
+          },
         ),
         const SizedBox(height: 24),
         Text(

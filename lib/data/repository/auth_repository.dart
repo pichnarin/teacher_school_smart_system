@@ -25,6 +25,10 @@ class AuthRepository {
       body: json.encode({'username': username, 'password': password}),
     );
 
+    //print debugger
+    print('Response body: ${response.body}');
+    print('Response status: ${response.statusCode}');
+
     final data = json.decode(response.body);
 
     if (response.statusCode != 200) {
@@ -44,6 +48,10 @@ class AuthRepository {
       body: json.encode({'username': username, 'otp': otp}),
     );
 
+    //print debugger
+    print('Response body: ${response.body}');
+    print('Response status: ${response.statusCode}');
+
     final data = json.decode(response.body);
 
     if (response.statusCode != 200) {
@@ -62,6 +70,10 @@ class AuthRepository {
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'token': token}),
     );
+
+    //print debugger
+    print('Response body: ${response.body}');
+    print('Response status: ${response.statusCode}');
 
     final data = json.decode(response.body);
 
