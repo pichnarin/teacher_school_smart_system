@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:pat_asl_portal/screen/login/widget/password_field_box.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../bloc/auth/auth_state.dart';
 import '../../bloc/auth/auth_event.dart';
+import '../navigator/navigator_controller.dart';
 import '../navigator/navigator_menu.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -61,6 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
             }
 
             if (state.isAuthenticated) {
+              //set the selected index to homescreen
+              final navigatorController = Get.find<NavigatorController>();
+              navigatorController.selectedIndex.value = 0;
+
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const NavigatorMenu()),
@@ -134,18 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.next,
         ),
         const SizedBox(height: 16),
-        TextField(
-          controller: passwordController,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'Password',
-            prefixIcon: const Icon(Icons.lock_outline_rounded),
-            border: const OutlineInputBorder(),
-            filled: true,
-            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-          ),
-          textInputAction: TextInputAction.done,
-        ),
+
+        /*
+        Password field with visibility toggle
+         */
+
+        PasswordFieldBox(controller: passwordController),
         const SizedBox(height: 24),
         FilledButton(
           onPressed: state.isLoading

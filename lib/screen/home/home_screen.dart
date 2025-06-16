@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -6,7 +7,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return BaseScreen(
+      body: ListView(
       padding: const EdgeInsets.all(16),
       children: [
         // Banner
@@ -87,6 +89,7 @@ class HomeScreen extends StatelessWidget {
         )),
         const SizedBox(height: 50),
       ],
+    )
     );
   }
 
@@ -105,11 +108,4 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// void main() {
-//   runApp(MaterialApp(
-//     home: Scaffold(
-//       appBar: AppBar(title: const Text('Home Screen')),
-//       body: HomeScreen(),
-//     ),
-//   ));
-// }
+

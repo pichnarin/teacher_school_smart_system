@@ -1,16 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../util/exception/api_exception.dart';
 import '../environment.dart';
-
-class ApiException implements Exception {
-  final String message;
-  final int statusCode;
-
-  ApiException(this.message, this.statusCode);
-
-  @override
-  String toString() => message;
-}
 
 class AuthRepository {
   final http.Client _httpClient;
