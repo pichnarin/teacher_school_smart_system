@@ -1,3 +1,5 @@
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 import '../model/user.dart';
 import '../repository/auth_repository.dart';
 import '../user_local_storage/secure_storage.dart';
@@ -25,7 +27,7 @@ class AuthService {
 
     if (token != null) {
       await _storage.persistentToken(token);
-      final tokenExpiry = DateTime.now().add(const Duration(hours: 1));
+      final tokenExpiry = JwtDecoder.getExpirationDate(token);
       return user.copyWith(token: token, tokenExpiry: tokenExpiry);
     }
     return user;
@@ -41,7 +43,7 @@ class AuthService {
 
     if (newToken != null) {
       await _storage.persistentToken(newToken);
-      final tokenExpiry = DateTime.now().add(const Duration(hours: 1));
+      final tokenExpiry = JwtDecoder.getExpirationDate(newToken);
       return user.copyWith(token: newToken, tokenExpiry: tokenExpiry);
     }
     return user;
@@ -58,15 +60,31 @@ class AuthService {
     }
   }
 
+
   Future<User?> getCurrentUser() async {
     final token = await _storage.retrieveToken();
-    if (token == null) return null;
 
-    try {
-      return await refreshToken();
-    } catch (e) {
-      await _storage.deleteToken();
+    if (token == null) {
+      print('[AuthService] No token found.');
       return null;
     }
+
+    try {
+      //  Decode and print token expiry
+      final expiryDate = JwtDecoder.getExpirationDate(token);
+      final isExpired = JwtDecoder.isExpired(token);
+
+      print('[AuthService] Token found: $token');
+      print('[AuthService] Token expires at: $expiryDate');
+      print('[AuthService] Token expired: $isExpired');
+
+      // Continue with your refresh logic
+      return await refreshToken();
+    } catch (e) {
+      print('[AuthService] Failed to refresh token: $e');
+      await _storage.deleteToken();
+      throw Exception('Session expired');
+    }
   }
+
 }

@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(state.copyWith(
           status: AuthStatus.unauthenticated,
-          clearError: true,
+          errorMessage: 'Session expired. Please log in again.',
           clearUser: true,
           isLoading: false,
         ));
@@ -113,6 +113,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.initiateLogin(event.username, event.password);
       emit(state.copyWith(
         status: AuthStatus.awaitingOtp,
+        successMessage: 'OTP resent successfully. Please check your email.',
         isLoading: false,
       ));
     } catch (e) {

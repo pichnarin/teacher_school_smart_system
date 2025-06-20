@@ -7,13 +7,14 @@ enum AuthStatus {
   unauthenticated,
   awaitingOtp,
   authenticated,
-  failure
+  failure,
 }
 
 class AuthState extends Equatable {
   final AuthStatus status;
   final User? user;
   final String? errorMessage;
+  final String? successMessage;
   final String? pendingUsername;
   final String? pendingEmail;
   final bool isLoading;
@@ -22,6 +23,7 @@ class AuthState extends Equatable {
     this.status = AuthStatus.initial,
     this.user,
     this.errorMessage,
+    this.successMessage,
     this.pendingUsername,
     this.pendingEmail,
     this.isLoading = false,
@@ -31,16 +33,19 @@ class AuthState extends Equatable {
     AuthStatus? status,
     User? user,
     String? errorMessage,
+    String? successMessage,
     String? pendingUsername,
     String? pendingEmail,
     bool? isLoading,
     bool clearError = false,
     bool clearUser = false,
+    bool clearSuccess = false,
   }) {
     return AuthState(
       status: status ?? this.status,
       user: clearUser ? null : (user ?? this.user),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      successMessage: clearSuccess ? null : (successMessage ?? this.successMessage),
       pendingUsername: pendingUsername ?? this.pendingUsername,
       pendingEmail: pendingEmail ?? this.pendingEmail,
       isLoading: isLoading ?? this.isLoading,
@@ -51,5 +56,13 @@ class AuthState extends Equatable {
   bool get isAwaitingOtp => status == AuthStatus.awaitingOtp;
 
   @override
-  List<Object?> get props => [status, user, errorMessage, pendingUsername, pendingEmail, isLoading];
+  List<Object?> get props => [
+    status,
+    user,
+    errorMessage,
+    successMessage,
+    pendingUsername,
+    pendingEmail,
+    isLoading
+  ];
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:pat_asl_portal/screen/login/widget/password_field_box.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../bloc/auth/auth_state.dart';
@@ -60,6 +59,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
+            }
+
+            // Show success SnackBar
+            if (state.successMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.successMessage!),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.green,
+                ),
+              );
+
+              // Clear success message after showing it
+              context.read<AuthBloc>().emit(state.copyWith(clearSuccess: true));
             }
 
             if (state.isAuthenticated) {
@@ -189,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const SizedBox(height: 24),
         Image.asset(
-          'assets/images/education_logo.png',
+          'assets/design_properties/ang_soeng_logo.jpg',
           height: 80,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {

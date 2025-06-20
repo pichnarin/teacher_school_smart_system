@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:pat_asl_portal/screen/login/login_screen.dart';
 import 'package:pat_asl_portal/screen/navigator/navigator_controller.dart';
+import 'package:pat_asl_portal/screen/splash/splash_screen.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/auth/auth_event.dart';
 import 'data/repository/auth_repository.dart';
@@ -47,7 +46,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const NavigatorMenu(),
-        home: const LoginScreen()
+        home: const SplashScreen()
       ),
     );
   }

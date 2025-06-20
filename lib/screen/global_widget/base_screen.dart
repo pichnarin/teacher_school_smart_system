@@ -13,7 +13,7 @@ class BaseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Header(
-        logoPath: 'assets/logo.png',
+        logoPath: 'assets/design_properties/ang_soeng_logo.jpg',
         onNotificationPressed: () {
           // Handle notification click
           print('Notification clicked');

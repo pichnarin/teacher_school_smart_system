@@ -36,11 +36,14 @@ class Environment {
 
   static String get endpointApi => "${endpointBase}api";
 
-  // Auth endpoints remain the same
+  // Auth endpoints
   static String get loginEndpoint => "$endpointApi/v1/user/login";
   static String get verifyOtpEndpoint => "$endpointApi/v1/user/verify";
   static String get refreshTokenEndpoint => "$endpointApi/v1/user/refresh-token";
   static String get logoutEndpoint => "$endpointApi/v1/user/auth/logout";
+
+  // Class endpoints
+
 }
 
 final environment = Environment();

@@ -1,16 +1,16 @@
-import 'package:pat_asl_portal/data/model/classes.dart';
+import 'package:pat_asl_portal/data/model/class.dart';
 import 'package:pat_asl_portal/data/model/dto/room_dto.dart';
 import 'package:pat_asl_portal/data/model/dto/schedule_dto.dart';
 import 'package:pat_asl_portal/data/model/dto/teacher_dto.dart';
 
-class ClassesDTO{
+class ClassDTO{
   final String classId;
   final String classGrade;
   final ScheduleDTO scheduleDTO;
   final RoomDTO roomDTO;
   final TeacherDTO teacherDTO;
 
-  const ClassesDTO({
+  const ClassDTO({
     required this.classId,
     required this.classGrade,
     required this.scheduleDTO,
@@ -18,8 +18,8 @@ class ClassesDTO{
     required this.teacherDTO,
   });
 
-  factory ClassesDTO.fromJson(Map<String, dynamic> json) {
-    return ClassesDTO(
+  factory ClassDTO.fromJson(Map<String, dynamic> json) {
+    return ClassDTO(
       classId: json['classId'] ?? '',
       classGrade: json['classGrade'] ?? '',
       scheduleDTO: ScheduleDTO.fromJson(json['schedule']),
@@ -38,8 +38,8 @@ class ClassesDTO{
     };
   }
 
-  Classes toClass() {
-    return Classes(
+  Class toClass() {
+    return Class(
       classId: classId,
       classGrade: classGrade,
       schedule: scheduleDTO.toSchedule(),
@@ -48,8 +48,8 @@ class ClassesDTO{
     );
   }
 
-  static ClassesDTO fromClass(Classes classes) {
-    return ClassesDTO(
+  static ClassDTO fromClass(Class classes) {
+    return ClassDTO(
       classId: classes.classId,
       classGrade: classes.classGrade,
       scheduleDTO: ScheduleDTO.fromSchedule(classes.schedule),

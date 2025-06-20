@@ -2,14 +2,14 @@ import 'package:pat_asl_portal/data/model/schedule.dart';
 import 'package:pat_asl_portal/data/model/teacher.dart';
 import 'package:pat_asl_portal/data/model/room.dart';
 
-class Classes {
+class Class {
   final String classId;
   final String classGrade;
   final Schedule schedule;
   final Room room;
   final Teacher teacher;
 
-  const Classes({
+  const Class({
     required this.classId,
     required this.classGrade,
     required this.schedule,
