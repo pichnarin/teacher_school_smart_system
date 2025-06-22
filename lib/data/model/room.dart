@@ -10,4 +10,9 @@ class Room {
   String get getRoomId => roomId;
   String get getRoomName => roomName;
 
+  @override
+  String toString() {
+    return 'Room(roomId: $roomId, roomName: $roomName)';
+  }
+
 }

@@ -10,10 +10,17 @@ class SubjectDTO {
   });
 
   factory SubjectDTO.fromJson(Map<String, dynamic> json) {
-    return SubjectDTO(
-      subjectId: json['id'] as String,
-      subjectName: json['subject_name'] as String,
-    );
+    try{
+      return SubjectDTO(
+        subjectId: json['id'] ?? '',
+        subjectName: json['subject_name'] ?? '',
+      );
+    }catch (e, stack) {
+      print('❌ Failed to parse SubjectDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

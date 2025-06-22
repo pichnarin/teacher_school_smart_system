@@ -19,13 +19,20 @@ class ClassDTO{
   });
 
   factory ClassDTO.fromJson(Map<String, dynamic> json) {
-    return ClassDTO(
-      classId: json['classId'] ?? '',
-      classGrade: json['classGrade'] ?? '',
-      scheduleDTO: ScheduleDTO.fromJson(json['schedule']),
-      roomDTO: RoomDTO.fromJson(json['room']),
-      teacherDTO: TeacherDTO.fromJson(json['teacher']),
-    );
+    try {
+      return ClassDTO(
+        classId: json['id'] ?? '',
+        classGrade: json['grade'] ?? '',
+        scheduleDTO: ScheduleDTO.fromJson(json['schedule']),
+        roomDTO: RoomDTO.fromJson(json['room']),
+        teacherDTO: TeacherDTO.fromJson(json['teacher']),
+      );
+    } catch (e, stack) {
+      print('❌ Failed to parse ClassDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

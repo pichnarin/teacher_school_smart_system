@@ -23,4 +23,9 @@ class Class {
   String get getRoomId => room.getRoomId;
   String get getTeacherId => teacher.getTeacherId;
 
+  @override
+  String toString() {
+    return 'Class(classId: $classId, classGrade: $classGrade, schedule: $schedule, room: $room, teacher: $teacher)';
+  }
+
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/service/auth_service.dart';
+import '../../data/service/auth/auth_service.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 

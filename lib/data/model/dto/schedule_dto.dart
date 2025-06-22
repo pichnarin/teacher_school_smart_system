@@ -21,30 +21,47 @@ class ScheduleDTO {
   });
 
   factory ScheduleDTO.fromJson(Map<String, dynamic> json) {
-    return ScheduleDTO(
-      scheduleId: json['scheduleId'] ?? '',
-      date: DateTime.parse(json['date']),
-      startTime: TimeOfDay(
-        hour: json['start_time']['hour'],
-        minute: json['start_time']['minute'],
-      ),
-      endTime: TimeOfDay(
-        hour: json['end_time']['hour'],
-        minute: json['end_time']['minute'],
-      ),
-      subjectDTO: SubjectDTO.fromJson(json['subject']),
-      sessionDTO: SessionDTO.fromJson(json['session']),
-    );
+    try {
+      final String startTimeStr = json['start_time'] ?? '00:00:00';
+      final String endTimeStr = json['end_time'] ?? '00:00:00';
+
+      TimeOfDay parseTime(String timeStr) {
+        final parts = timeStr.split(':');
+        if (parts.length < 2) throw FormatException('Invalid time format: $timeStr');
+        return TimeOfDay(
+          hour: int.parse(parts[0]),
+          minute: int.parse(parts[1]),
+        );
+      }
+
+      return ScheduleDTO(
+        scheduleId: json['id'] ?? '',
+        date: DateTime.parse(json['date']),
+        startTime: parseTime(startTimeStr),
+        endTime: parseTime(endTimeStr),
+        subjectDTO: SubjectDTO.fromJson(json['subject']),
+        sessionDTO: SessionDTO.fromJson(json['sessionType']),
+      );
+    } catch (e, stack) {
+      print('❌ Failed to parse ScheduleDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
 
+
   Map<String, dynamic> toJson() {
+    String formatTime(TimeOfDay time) =>
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
     return {
       'scheduleId': scheduleId,
       'date': date.toIso8601String(),
-      'startTime': {'hour': startTime.hour, 'minute': startTime.minute},
-      'endTime': {'hour': endTime.hour, 'minute': endTime.minute},
+      'start_time': formatTime(startTime),
+      'end_time': formatTime(endTime),
       'subject': subjectDTO.toJson(),
-      'session': sessionDTO.toJson(),
+      'sessionType': sessionDTO.toJson(),
     };
   }
 

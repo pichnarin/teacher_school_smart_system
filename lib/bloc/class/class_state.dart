@@ -1,32 +1,36 @@
-import 'package:equatable/equatable.dart';
 
 import '../../data/model/class.dart';
 
-enum ClassStatus { initial, loading, success, failure }
+enum ClassStatus{
+  initial,
+  loading,
+  loaded,
+  error
+}
 
-class ClassState extends Equatable {
+class ClassState {
   final ClassStatus status;
-  final List<Class>? classes;
   final String? errorMessage;
+  final List<Class>? classes;
 
   const ClassState({
     this.status = ClassStatus.initial,
-    this.classes,
     this.errorMessage,
+    this.classes
   });
 
   ClassState copyWith({
     ClassStatus? status,
-    List<Class>? classes,
     String? errorMessage,
+    List<Class>? classes,
   }) {
     return ClassState(
       status: status ?? this.status,
-      classes: classes ?? this.classes,
       errorMessage: errorMessage ?? this.errorMessage,
+      classes: classes ?? this.classes,
     );
   }
 
   @override
-  List<Object?> get props => [status, classes, errorMessage];
+  List<Object?> get props => [status, errorMessage, classes];
 }

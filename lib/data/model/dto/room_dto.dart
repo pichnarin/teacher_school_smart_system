@@ -10,10 +10,17 @@ class RoomDTO {
   });
 
   factory RoomDTO.fromJson(Map<String, dynamic> json) {
-    return RoomDTO(
-      roomId: json['id'] ?? '',
-      roomName: json['room_name'] ?? '',
-    );
+    try{
+      return RoomDTO(
+        roomId: json['id'] ?? '',
+        roomName: json['room_name'] ?? '',
+      );
+    }catch (e, stack) {
+      print('❌ Failed to parse RoomDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

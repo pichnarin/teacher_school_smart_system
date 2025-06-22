@@ -10,11 +10,19 @@ class SessionDTO {
   });
 
   factory SessionDTO.fromJson(Map<String, dynamic> json) {
-    return SessionDTO(
-      sessionId: json['id'] ?? '',
-      sessionType: json['session_type'] ?? '',
-    );
+    try{
+      return SessionDTO(
+        sessionId: json['id'] ?? '',
+        sessionType: SessionType.fromString(json['session_type'] ?? ''),
+      );
+    }catch (e, stack) {
+      print('❌ Failed to parse ScheduleDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
+
 
   Map<String, dynamic> toJson() {
     return {

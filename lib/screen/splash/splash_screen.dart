@@ -152,10 +152,6 @@ class _SplashScreenState extends State<SplashScreen> {
       listener: (context, state) async {
         if (state.status == AuthStatus.unauthenticated) {
           if (state.errorMessage?.contains('Session expired. Please log in again.') == true) {
-            // print("Session expired! Showing SnackBar.");
-            // print('Token refresh failed, setting unauthenticated with error');
-            // print('AuthState changed: ${state.status}, error: ${state.errorMessage}');
-
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

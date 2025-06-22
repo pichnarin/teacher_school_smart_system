@@ -26,4 +26,10 @@ class Schedule{
   String get getEndTime => endTime.toString();
   String get getSubjectId => subject.subjectId;
   String get getSessionId => session.sessionId;
+  SessionType get getSessionName => session.sessionType;
+
+  @override
+  String toString() {
+    return 'Schedule(scheduleId: $scheduleId, date: $date, startTime: $startTime, endTime: $endTime, subject: $subject, session: $session)';
+  }
 }

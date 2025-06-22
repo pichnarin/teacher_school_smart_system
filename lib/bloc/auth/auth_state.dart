@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../data/model/user.dart';
+import '../../data/model/auth/user.dart';
 
 enum AuthStatus {
   initial,
@@ -12,7 +12,7 @@ enum AuthStatus {
 
 class AuthState extends Equatable {
   final AuthStatus status;
-  final User? user;
+  final UserProfile? user;
   final String? errorMessage;
   final String? successMessage;
   final String? pendingUsername;
@@ -31,7 +31,7 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     AuthStatus? status,
-    User? user,
+    UserProfile? user,
     String? errorMessage,
     String? successMessage,
     String? pendingUsername,

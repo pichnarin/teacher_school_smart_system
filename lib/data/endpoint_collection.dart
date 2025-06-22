@@ -18,15 +18,15 @@
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-class Environment {
-  // For development, you can change this to your actual server
-  static const String _devServerIp = "192.168.1.6"; // Replace with your PC's IP
+class EndpointCollection {
+  static const String _devServerIp = "192.168.1.6";
+  static const String _socketServerUrl = "http://192.168.1.6:3000";
 
   static String get endpointBase {
     if (kIsWeb) {
       return "http://localhost:3000/";
     } else if (Platform.isAndroid) {
-      bool isEmulator = false; // Set this based on detection or build config
+      bool isEmulator = false;
       return isEmulator ? "http://10.0.2.2:3000/" : "http://$_devServerIp:3000/";
     } else {
       // iOS simulator uses localhost, physical devices need actual IP
@@ -34,25 +34,24 @@ class Environment {
     }
   }
 
+  static String get socketServerUrl => _socketServerUrl;
+
   static String get endpointApi => "${endpointBase}api";
 
-  // Auth endpoints
   static String get loginEndpoint => "$endpointApi/v1/user/login";
   static String get verifyOtpEndpoint => "$endpointApi/v1/user/verify";
   static String get refreshTokenEndpoint => "$endpointApi/v1/user/refresh-token";
   static String get logoutEndpoint => "$endpointApi/v1/user/auth/logout";
 
-  // Class endpoints
+
+ static String get classEndpoint => '$endpointApi/v1/user/auth/teacher';
+ 
+  static String get allClassesEndpoint => '$classEndpoint/classes/all';
+  static String Function(String classId) get classByIdEndpoint => (String classId) => '$classEndpoint/classes/$classId';
+  static String Function(String grade) get classByGradeEndpoint => (String grade) => '$classEndpoint/classes/grade/$grade';
+  static String Function(String teacherId) get classByTeacherEndpoint => (String teacherId) => '$classEndpoint/teacher/$teacherId/classes';
 
 }
 
-final environment = Environment();
+final environment = EndpointCollection();
 
-void main(){
-  print("Base Endpoint: ${Environment.endpointBase}");
-  print("API Endpoint: ${Environment.endpointApi}");
-  print("Login Endpoint: ${Environment.loginEndpoint}");
-  print("Verify OTP Endpoint: ${Environment.verifyOtpEndpoint}");
-  print("Refresh Token Endpoint: ${Environment.refreshTokenEndpoint}");
-  print("Logout Endpoint: ${Environment.logoutEndpoint}");
-}

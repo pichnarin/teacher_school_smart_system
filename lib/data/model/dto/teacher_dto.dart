@@ -1,10 +1,12 @@
+import 'package:pat_asl_portal/data/model/dto/user_profile_dto.dart';
+
 import '../teacher.dart';
-import '../user.dart';
+import '../user_profile.dart';
 
 class TeacherDTO {
   final String teacherId;
   final String no;
-  final User user;
+  final UserProfile user;
 
   const TeacherDTO({
     required this.teacherId,
@@ -13,19 +15,25 @@ class TeacherDTO {
   });
 
   factory TeacherDTO.fromJson(Map<String, dynamic> json) {
-    return TeacherDTO(
-      teacherId: json['id'] ?? '',
-      no: json['no'] ?? '',
-      user: User.fromJson(json['user'] ?? {}),
-    );
+    try{
+      return TeacherDTO(
+        teacherId: json['id'] ?? '',
+        no: json['no'] ?? '',
+        user: UserProfileDTO.fromJson(json['user'] ?? {}).toUserProfile(),
+      );
+    }catch (e, stack) {
+      print('❌ Failed to parse TeacherDTO: $e');
+      print('🔍 Stack trace:\n$stack');
+      print('🧪 Data:\n$json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
       'teacherId': teacherId,
       'no': no,
-      'user': user.toJson(),
-    };
+      'user': UserProfileDTO.fromUserProfile(user).toJson(),    };
   }
 
   Teacher toTeacher() {

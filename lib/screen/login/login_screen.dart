@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const SizedBox(height: 32),
         Image.asset(
-          'assets/images/education_logo.png',
+          'assets/design_properties/ang_soeng_logo.jpg',
           height: 80,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
             prefixIcon: const Icon(Icons.person_outline_rounded),
             border: const OutlineInputBorder(),
             filled: true,
-            fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
           ),
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,

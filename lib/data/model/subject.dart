@@ -9,4 +9,9 @@ class Subject {
 
   String get getSubjectId => subjectId;
   String get getSubjectName => subjectName;
+
+  @override
+  String toString() {
+    return 'Subject(subjectId: $subjectId, subjectName: $subjectName)';
+  }
 }

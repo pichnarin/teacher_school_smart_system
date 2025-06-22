@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class User extends Equatable {
+class UserProfile extends Equatable {
   final String id;
   final String username;
   final String email;
@@ -8,7 +8,7 @@ class User extends Equatable {
   final String? token;
   final DateTime? tokenExpiry;
 
-  const User({
+  const UserProfile({
     required this.id,
     required this.username,
     required this.email,
@@ -22,7 +22,7 @@ class User extends Equatable {
     return tokenExpiry!.isAfter(DateTime.now());
   }
 
-  User copyWith({
+  UserProfile copyWith({
     String? id,
     String? username,
     String? email,
@@ -30,7 +30,7 @@ class User extends Equatable {
     String? token,
     DateTime? tokenExpiry,
   }) {
-    return User(
+    return UserProfile(
       id: id ?? this.id,
       username: username ?? this.username,
       email: email ?? this.email,
@@ -40,8 +40,8 @@ class User extends Equatable {
     );
   }
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
       id: json['id'] ?? json['userId'] ?? '',
       username: json['username'] ?? '',
       email: json['email'] ?? '',
@@ -66,4 +66,9 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [id, username, email, role, token, tokenExpiry];
+
+  @override
+  String toString() {
+    return 'UserProfile(id: $id, username: $username, email: $email, role: $role, token: $token, tokenExpiry: $tokenExpiry)';
+  }
 }
