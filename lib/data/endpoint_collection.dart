@@ -44,14 +44,15 @@ class EndpointCollection {
   static String get logoutEndpoint => "$endpointApi/v1/user/auth/logout";
 
 
- static String get classEndpoint => '$endpointApi/v1/user/auth/teacher';
- 
-  static String get allClassesEndpoint => '$classEndpoint/classes/all';
-  static String Function(String classId) get classByIdEndpoint => (String classId) => '$classEndpoint/classes/$classId';
-  static String Function(String grade) get classByGradeEndpoint => (String grade) => '$classEndpoint/classes/grade/$grade';
-  static String Function(String teacherId) get classByTeacherEndpoint => (String teacherId) => '$classEndpoint/teacher/$teacherId/classes';
+ static String get classEndpoint => '$endpointApi/v1/user/auth/teacher/classes';
+
+  static String get allClassesEndpoint => '$classEndpoint/all';
+
+  static String Function(String classId) get classByIdEndpoint => (String classId) => '$classEndpoint/by-id?id=$classId';
+  static String Function(String date) get classByDateEndpoint=> (String date) => '$classEndpoint/by-date?date=$date';
+  static String Function(String roomName) get classByRoomEndpoint => (String roomName) => '$classEndpoint/by-room-name?room_name=$roomName';
+  static String Function(String grade) get classByGradeEndpoint => (String grade) => '$classEndpoint/by-grade?grade=$grade';
 
 }
 
 final environment = EndpointCollection();
-

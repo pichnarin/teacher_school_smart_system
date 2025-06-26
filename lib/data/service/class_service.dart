@@ -4,7 +4,8 @@ import 'package:pat_asl_portal/data/repository/class_repository.dart';
 class ClassService {
   final ClassRepository _repository;
 
-  ClassService({required ClassRepository repository}) : _repository = repository;
+  ClassService({required ClassRepository repository})
+    : _repository = repository;
 
   /// Retrieves all assigned classes
   ///
@@ -13,19 +14,28 @@ class ClassService {
   Future<List<Class>> getAllAssignedClasses() async {
     final classDTOs = await _repository.fetchAllAssignedClass();
 
-
-
-    return classDTOs
-        .map((dto) => dto.toClass())
-        .toList();
+    return classDTOs.map((dto) => dto.toClass()).toList();
   }
 
-  /// Gets a specific class by ID
-  // Future<Class?> getClassById(String classId) async {
-  //   final classes = await getAllAssignedClasses();
-  //   return classes.firstWhere(
-  //         (classItem) => classItem.classId == classId,
-  //     orElse: () => null,
-  //   );
-  // }
+  /// Retrieves classes by date example: 2023-10-01
+  /// use this method to get classes for today, tomorrow, or any specific date
+  Future<List<Class>> getClassesByDate(String date) async {
+    final classDTOs = await _repository.fetchClassByDate(date);
+
+    return classDTOs.map((dto) => dto.toClass()).toList();
+  }
+
+  Future<List<Class>> getClassesByRoom(String room) async {
+    final classDTOs = await _repository.fetchClassByRoom(room);
+
+    return classDTOs.map((dto) => dto.toClass()).toList();
+  }
+
+  Future<List<Class>> getClassesByGrade(String grade) async {
+    final classDTOs = await _repository.fetchClassByGrade(grade);
+
+    return classDTOs.map((dto) => dto.toClass()).toList();
+  }
+
+
 }

@@ -9,10 +9,10 @@ abstract class ClassEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class ClassesUpdatedFromSocket extends ClassEvent {
+class UpdateClassesFromWebSocket extends ClassEvent {
   final List<Class> classes;
 
-  const ClassesUpdatedFromSocket(this.classes);
+  const UpdateClassesFromWebSocket(this.classes);
 
   @override
   List<Object?> get props => [classes];
@@ -29,5 +29,16 @@ class FetchClasses extends ClassEvent {
   @override
   List<Object?> get props => [roomId, scheduleId, teacherId];
 }
+
+class FetchClassesByDate extends ClassEvent {
+  final String date;
+
+  const FetchClassesByDate(this.date);
+
+  @override
+  List<Object?> get props => [date];
+}
+
+
 
 

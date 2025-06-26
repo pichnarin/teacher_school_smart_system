@@ -39,4 +39,88 @@ class ClassRepository {
       throw ApiException('Failed to fetch classes: ${e.toString()}', 500);
     }
   }
+
+  Future<List<ClassDTO>> fetchClassByDate(String date) async{
+    try{
+      final url = EndpointCollection.classByDateEndpoint(date);
+      final response = await _baseRepository.get(url);
+      final dynamic responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        final responseData = json.decode(response.body);
+        throw ApiException(
+          responseData is Map ? responseData['message'] ?? 'Failed to fetch classes by date' : 'Failed to fetch classes by date',
+          response.statusCode,
+        );
+      }
+
+      if(responseData is! List){
+        throw ApiException('Unexpected response format', response.statusCode);
+      }
+
+      return responseData
+          .map((json) => ClassDTO.fromJson(json))
+          .toList();
+
+    }catch(e){
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to fetch classes by date: ${e.toString()}', 500);
+    }
+  }
+
+  Future<List<ClassDTO>> fetchClassByRoom(String room) async{
+    try{
+      final url = EndpointCollection.classByRoomEndpoint(room);
+      final response = await _baseRepository.get(url);
+      final dynamic responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        final responseData = json.decode(response.body);
+        throw ApiException(
+          responseData is Map ? responseData['message'] ?? 'Failed to fetch classes by room' : 'Failed to fetch classes by room',
+          response.statusCode,
+        );
+      }
+
+      if(responseData is! List){
+        throw ApiException('Unexpected response format', response.statusCode);
+      }
+
+      return responseData
+          .map((json) => ClassDTO.fromJson(json))
+          .toList();
+
+    }catch(e){
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to fetch classes by room: ${e.toString()}', 500);
+    }
+  }
+
+  Future<List<ClassDTO>> fetchClassByGrade(String grade) async{
+    try{
+      final url = EndpointCollection.classByGradeEndpoint(grade);
+      final response = await _baseRepository.get(url);
+      final dynamic responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        final responseData = json.decode(response.body);
+        throw ApiException(
+          responseData is Map ? responseData['message'] ?? 'Failed to fetch classes by grade' : 'Failed to fetch classes by grade',
+          response.statusCode,
+        );
+      }
+
+      if(responseData is! List){
+        throw ApiException('Unexpected response format', response.statusCode);
+      }
+
+      return responseData
+          .map((json) => ClassDTO.fromJson(json))
+          .toList();
+
+    }catch(e){
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to fetch classes by grade: ${e.toString()}', 500);
+    }
+  }
 }

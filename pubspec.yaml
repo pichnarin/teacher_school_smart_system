@@ -19,15 +19,24 @@ dependencies:
   mockito: ^5.4.6
   socket_io_client: ^3.1.2
 
+
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/ang_soeng_logo.png"
+  remove_alpha_ios: true
 
 
 
 flutter:
   assets:
     - assets/design_properties/
+    - assets/icon/
 
   uses-material-design: true

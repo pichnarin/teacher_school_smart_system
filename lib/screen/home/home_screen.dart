@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:pat_asl_portal/bloc/class/class_bloc.dart';
 import 'package:pat_asl_portal/bloc/class/class_event.dart';
 import 'package:pat_asl_portal/bloc/class/class_state.dart';
@@ -7,12 +8,11 @@ import 'package:pat_asl_portal/data/model/class.dart';
 import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
 import 'package:pat_asl_portal/screen/home/widget/news_card.dart';
 import 'package:pat_asl_portal/screen/home/widget/recent_activity_list.dart';
-import 'package:pat_asl_portal/screen/home/widget/section_header.dart';
+import 'package:pat_asl_portal/screen/global_widget/section_header.dart';
 import 'package:pat_asl_portal/screen/home/widget/suggest_class_card.dart';
 import 'package:pat_asl_portal/screen/home/widget/welcum_banner.dart';
-import 'package:pat_asl_portal/util/formatter/time_of_the_day_formmater.dart';
-
-import '../../data/model/session.dart';
+import 'package:pat_asl_portal/util/formatter/time_of_the_day_formater.dart';
+import '../navigator/navigator_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,10 +22,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final controller = Get.find<NavigatorController>();
   @override
   void initState() {
     super.initState();
-    // Fetch classes when the screen loads
+    //initial fetch
     context.read<ClassBloc>().add(const FetchClasses());
   }
 
@@ -56,7 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 30),
 
           // Suggested classes
-          SectionHeader(title: "Suggested Classes"),
+          SectionHeader(
+              title: "Suggested Classes",
+            onSeeAll: (){
+                controller.selectedIndex.value = 2; // Navigate to Schedule screen
+            },
+          ),
 
           const SizedBox(height: 10),
 
@@ -65,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 210,
             child: BlocBuilder<ClassBloc, ClassState>(
               builder: (context, state) {
+                debugPrint("HomeScreen ClassBloc State: ${state.status}, Classes: ${state.classes?.length}");
                 switch (state.status) {
                   case ClassStatus.loading:
                     return const Center(child: CircularProgressIndicator());
@@ -84,8 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return _buildClassList(state.classes!);
 
                   case ClassStatus.initial:
-                  default:
-                    return const SizedBox();
+                  return const SizedBox();
                 }
               },
             ),
@@ -140,17 +146,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _quickAction({required IconData icon, required String label}) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 26,
-          backgroundColor: Colors.blue.shade100,
-          child: Icon(icon, color: Colors.blue, size: 28),
-        ),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
-    );
-  }
 }
