@@ -37,5 +37,9 @@ class ClassService {
     return classDTOs.map((dto) => dto.toClass()).toList();
   }
 
+  Future<Class> getClassByID(String classId) async {
+    final classDTO = await _repository.fetchClassById(classId);
+    return classDTO.toClass();
+  }
 
 }

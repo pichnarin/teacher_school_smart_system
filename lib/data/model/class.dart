@@ -8,6 +8,7 @@ class Class {
   final Schedule schedule;
   final Room room;
   final Teacher teacher;
+  final int? studentCount;
 
   const Class({
     required this.classId,
@@ -15,6 +16,7 @@ class Class {
     required this.schedule,
     required this.room,
     required this.teacher,
+    this.studentCount,
   });
 
   String get getClassId => classId;
@@ -22,10 +24,11 @@ class Class {
   String get getScheduleId => schedule.getScheduleId;
   String get getRoomId => room.getRoomId;
   String get getTeacherId => teacher.getTeacherId;
+  int? get getStudentCount => studentCount;
 
   @override
   String toString() {
-    return 'Class(classId: $classId, classGrade: $classGrade, schedule: $schedule, room: $room, teacher: $teacher)';
+    return 'Class(classId: $classId, classGrade: $classGrade, schedule: $schedule, room: $room, teacher: $teacher, studentCount: $studentCount)';
   }
 
 }

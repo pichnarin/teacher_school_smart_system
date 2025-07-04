@@ -10,7 +10,6 @@ class BaseRepository {
 
   Future<http.Response> get(String url) async {
     final token = await _storage.retrieveToken();
-    print(token);
     return _client.get(
       Uri.parse(url),
       headers: {
@@ -23,8 +22,21 @@ class BaseRepository {
 
   Future<http.Response> post(String url, {Map<String, dynamic>? body}) async {
     final token = await _storage.retrieveToken();
-    print(token);
     return _client.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: body != null ? json.encode(body) : null,
+    );
+  }
+
+
+  Future<http.Response> patch(String url, Map<String, dynamic>? body) async {
+    final token = await _storage.retrieveToken();
+    return _client.patch(
       Uri.parse(url),
       headers: {
         'Authorization': 'Bearer $token',

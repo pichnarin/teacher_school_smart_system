@@ -10,9 +10,9 @@ import '../../bloc/class/class_bloc.dart';
 import '../../bloc/class/class_state.dart';
 import '../../data/model/class.dart';
 import '../../util/formatter/time_of_the_day_formater.dart';
-import '../enroll_student_attendance/attendance_screen.dart';
 import '../home/widget/suggest_class_card.dart';
 import '../navigator/navigator_controller.dart';
+import 'enroll_student_attendance/class_detail_screen.dart';
 
 //when user click on schedule, it will show the schedule screen
 // this screen will show the schedule of the user like classes, exams, and other activities
@@ -69,16 +69,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             },
           ),
 
-          SectionHeader(title: "Your Schedule"),
+          SectionHeader(title: "Your Tasks for $currentDate"),
 
           const SizedBox(height: 10),
 
           // Class list with BlocBuilder
           BlocBuilder<ClassBloc, ClassState>(
             builder: (context, state) {
-              debugPrint(
-                "ScheduleScreen ClassBloc State: ${state.status}, Classes: ${state.classFilterByDate?.length}, Date: $currentDate",
-              );
+              // debugPrint(
+              //   "ScheduleScreen ClassBloc State: ${state.status}, Classes: ${state.classFilterByDate?.length}, Date: $currentDate",
+              // );
               switch (state.status) {
                 case ClassStatus.loading:
                   return const Center(child: CircularProgressIndicator());
@@ -133,26 +133,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           classDate: classItem.schedule.date,
           startTime: TimeFormatter.format(classItem.schedule.startTime),
           endTime: TimeFormatter.format(classItem.schedule.endTime),
-          totalStudents: "10",
-          onTap: () {
-            // Navigate to class details
+          totalStudents: classItem.studentCount?.toString() ?? '0',
+          onTap: (){
+            Get.find<NavigatorController>().pushToCurrentTab(ClassDetailScreen(classId: classItem.classId));
           },
         );
       },
     );
   }
 }
-
-//Center(
-//       child: ElevatedButton(
-//         onPressed: () {
-//           final nav = controller.navigatorKeys[2].currentState;
-//           if (nav != null) {
-//             nav.push(MaterialPageRoute(builder: (_) => AttendanceScreen()));
-//           } else {
-//             debugPrint("Navigator not ready yet");
-//           }
-//         },
-//         child: Text("Take Attendance"),
-//       ),
-//       ),

@@ -46,6 +46,8 @@ class EndpointCollection {
 
  static String get classEndpoint => '$endpointApi/v1/user/auth/teacher/classes';
 
+ static String get enrollmentEndpoint => '$endpointApi/v1/user/auth/teacher/enrollment';
+
   static String get allClassesEndpoint => '$classEndpoint/all';
 
   static String Function(String classId) get classByIdEndpoint => (String classId) => '$classEndpoint/by-id?id=$classId';
@@ -53,6 +55,18 @@ class EndpointCollection {
   static String Function(String roomName) get classByRoomEndpoint => (String roomName) => '$classEndpoint/by-room-name?room_name=$roomName';
   static String Function(String grade) get classByGradeEndpoint => (String grade) => '$classEndpoint/by-grade?grade=$grade';
 
+  static String Function(String classId) get studentListEndpoint => (String classId) => '$enrollmentEndpoint/student_list/by-class_id?class_id=$classId';
+
+  static String get markAttendanceEndpoint => '$enrollmentEndpoint/attendance';
+  static String Function(String attendanceId) get patchAttendanceEndpoint => (String attendanceId) => '$enrollmentEndpoint/attendance/$attendanceId';
+  static String Function(String classId, String date) get getAttendanceByClass =>
+          (String classId, String date) =>
+      '$enrollmentEndpoint/attendance/by-class_id?class_id=$classId&date=$date';
+
 }
 
 final environment = EndpointCollection();
+
+
+// teacherRouter.post('/enrollment/attendance', (req, res, next) => erollmentService.markAttendance(req, res, next));
+// teacherRouter.patch('/enrollment/attendance/:attendance_id', (req, res, next) =>erollmentService.patchAttendance(req, res, next));

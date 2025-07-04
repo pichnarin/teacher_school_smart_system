@@ -39,6 +39,15 @@ class FetchClassesByDate extends ClassEvent {
   List<Object?> get props => [date];
 }
 
+class FetchClassById extends ClassEvent {
+  final String classId;
+
+  const FetchClassById(this.classId);
+
+  @override
+  List<Object?> get props => [classId];
+}
+
 
 
 

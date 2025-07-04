@@ -20,6 +20,7 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
         super(const ClassState()) {
     on<FetchClasses>(_onFetchClass);
     on<FetchClassesByDate>(_onFetchClassesByDate);
+    on<FetchClassById>(_onFetchClassById);
     on<UpdateClassesFromWebSocket>(_onUpdateClassesFromWebSocket);
 
     // Listen to WebSocket updates
@@ -84,14 +85,14 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
 
     try {
       final classes = await _classService.getAllAssignedClasses();
-      debugPrint("classes: $classes");
+      // debugPrint("classes: $classes");
 
       emit(state.copyWith(
         status: ClassStatus.loaded,
         classes: List.from(classes),
       ));
     } catch (e) {
-      debugPrint("Error fetching classes: $e");
+      // debugPrint("Error fetching classes: $e");
       emit(state.copyWith(
         status: ClassStatus.error,
         errorMessage: e.toString(),
@@ -108,7 +109,7 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
 
     try {
       final classes = await _classService.getClassesByDate(event.date);
-      debugPrint("Classes for date ${event.date}: $classes");
+      // debugPrint("Classes for date ${event.date}: $classes");
 
       emit(state.copyWith(
         status: ClassStatus.loaded,
@@ -116,7 +117,32 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
         selectedDate: event.date,
       ));
     } catch (e) {
-      debugPrint("Error fetching classes by date: $e");
+      // debugPrint("Error fetching classes by date: $e");
+      emit(state.copyWith(
+        status: ClassStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+//uuid
+  void _onFetchClassById(
+      FetchClassById event,
+      Emitter<ClassState> emit,
+      ) async {
+    emit(state.copyWith(status: ClassStatus.loading));
+
+    try {
+      final classItem = await _classService.getClassByID(event.classId);
+      // debugPrint("Class for ID ${event.classId}: $classItem");
+
+      emit(state.copyWith(
+        status: ClassStatus.loaded,
+        classFilterById: List.from([classItem]),
+        classId: event.classId,
+      ));
+    } catch (e) {
+      // debugPrint("Error fetching class by ID: $e");
       emit(state.copyWith(
         status: ClassStatus.error,
         errorMessage: e.toString(),

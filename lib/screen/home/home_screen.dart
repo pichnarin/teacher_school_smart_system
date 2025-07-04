@@ -12,6 +12,7 @@ import 'package:pat_asl_portal/screen/global_widget/section_header.dart';
 import 'package:pat_asl_portal/screen/home/widget/suggest_class_card.dart';
 import 'package:pat_asl_portal/screen/home/widget/welcum_banner.dart';
 import 'package:pat_asl_portal/util/formatter/time_of_the_day_formater.dart';
+import '../../util/checker/wifi_info.dart';
 import '../navigator/navigator_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     //initial fetch
     context.read<ClassBloc>().add(const FetchClasses());
+    // Future.delayed(Duration.zero, () {
+    //   ensureLocationForWifi(context);
+    // });
   }
 
   @override
@@ -71,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 210,
             child: BlocBuilder<ClassBloc, ClassState>(
               builder: (context, state) {
-                debugPrint("HomeScreen ClassBloc State: ${state.status}, Classes: ${state.classes?.length}");
+                // debugPrint("HomeScreen ClassBloc State: ${state.status}, Classes: ${state.classes?.length}");
                 switch (state.status) {
                   case ClassStatus.loading:
                     return const Center(child: CircularProgressIndicator());
@@ -136,11 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
           classDate: classItem.schedule.date,
           startTime: TimeFormatter.format(classItem.schedule.startTime),
           endTime: TimeFormatter.format(classItem.schedule.endTime),
-          totalStudents: "10",
+          totalStudents: classItem.studentCount?.toString() ?? '0',
           // classItem.students?.length.toString(),
-          onTap: () {
-            // Navigate to class details
-          },
         );
       },
     );

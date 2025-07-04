@@ -9,6 +9,8 @@ class ClassDTO{
   final ScheduleDTO scheduleDTO;
   final RoomDTO roomDTO;
   final TeacherDTO teacherDTO;
+  final int? studentCount;
+
 
   const ClassDTO({
     required this.classId,
@@ -16,6 +18,7 @@ class ClassDTO{
     required this.scheduleDTO,
     required this.roomDTO,
     required this.teacherDTO,
+    this.studentCount,
   });
 
   factory ClassDTO.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,8 @@ class ClassDTO{
         scheduleDTO: ScheduleDTO.fromJson(json['schedule']),
         roomDTO: RoomDTO.fromJson(json['room']),
         teacherDTO: TeacherDTO.fromJson(json['teacher']),
+        studentCount: json['student_count'] ?? 0,
+
       );
     } catch (e, stack) {
       print('❌ Failed to parse ClassDTO: $e');
@@ -42,6 +47,7 @@ class ClassDTO{
       'schedule': scheduleDTO.toJson(),
       'room': roomDTO.toJson(),
       'teacher': teacherDTO.toJson(),
+      'studentCount': studentCount ?? 0,
     };
   }
 
@@ -52,6 +58,7 @@ class ClassDTO{
       schedule: scheduleDTO.toSchedule(),
       room: roomDTO.toRoom(),
       teacher: teacherDTO.toTeacher(),
+      studentCount: studentCount ?? 0,
     );
   }
 
@@ -62,6 +69,7 @@ class ClassDTO{
       scheduleDTO: ScheduleDTO.fromSchedule(classes.schedule),
       roomDTO: RoomDTO.fromRoom(classes.room),
       teacherDTO: TeacherDTO.fromTeacher(classes.teacher),
+      studentCount: classes.studentCount,
     );
   }
 }

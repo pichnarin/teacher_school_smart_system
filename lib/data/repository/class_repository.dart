@@ -123,4 +123,25 @@ class ClassRepository {
       throw ApiException('Failed to fetch classes by grade: ${e.toString()}', 500);
     }
   }
+
+  Future<ClassDTO> fetchClassById(String classId) async {
+    try {
+      final url = EndpointCollection.classByIdEndpoint(classId);
+      final response = await _baseRepository.get(url);
+      final dynamic responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        final responseData = json.decode(response.body);
+        throw ApiException(
+          responseData is Map ? responseData['message'] ?? 'Failed to fetch class by ID' : 'Failed to fetch class by ID',
+          response.statusCode,
+        );
+      }
+
+      return ClassDTO.fromJson(responseData);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to fetch class by ID: ${e.toString()}', 500);
+    }
+  }
 }

@@ -14,6 +14,8 @@ class ClassState {
   final List<Class>? classes;
   final String? selectedDate;
   final List<Class>? classFilterByDate;
+  final String? classId;
+  final List<Class>? classFilterById;
 
 
   const ClassState({
@@ -22,6 +24,8 @@ class ClassState {
     this.classes,
     this.selectedDate,
     this.classFilterByDate,
+    this.classId,
+    this.classFilterById,
 
   });
 
@@ -30,7 +34,9 @@ class ClassState {
     String? errorMessage,
     List<Class>? classes,
     String? selectedDate,
-    List<Class>? classFilterByDate
+    List<Class>? classFilterByDate,
+    String? classId,
+    List<Class>? classFilterById,
   }) {
     return ClassState(
       status: status ?? this.status,
@@ -38,9 +44,11 @@ class ClassState {
       classes: classes ?? this.classes,
       selectedDate: selectedDate ?? this.selectedDate,
       classFilterByDate: classFilterByDate ?? this.classFilterByDate,
+      classId: classId ?? this.classId,
+      classFilterById: classFilterById ?? this.classFilterById,
     );
   }
 
   @override
-  List<Object?> get props => [status, errorMessage, classes, selectedDate, classFilterByDate];
+  List<Object?> get props => [status, errorMessage, classes, selectedDate, classFilterByDate, classId, classFilterById];
 }
