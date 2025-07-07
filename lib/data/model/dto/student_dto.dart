@@ -28,6 +28,30 @@ class StudentDTO {
     );
   }
 
+  factory StudentDTO.fromStudent(Student student) {
+    return StudentDTO(
+      id: student.studentId,
+      studentNumber: student.studentNumber,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      grade: student.grade,
+      dob: student.dob
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'no': studentNumber,
+      'first_name': firstName,
+      'last_name': lastName,
+      'grade': grade,
+      'dob': dob.toIso8601String()
+    };
+  }
+
+
+
   Student toStudent() => Student(
     studentId: id,
     studentNumber: studentNumber,
