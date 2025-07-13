@@ -5,7 +5,7 @@ import '../schedule.dart';
 
 class ScheduleDTO {
   final String scheduleId;
-  final DateTime date;
+  final List<String> dayOfWeek;
   final TimeOfDay startTime;
   final TimeOfDay endTime;
   final SubjectDTO subjectDTO;
@@ -13,7 +13,7 @@ class ScheduleDTO {
 
   const ScheduleDTO({
     required this.scheduleId,
-    required this.date,
+    required this.dayOfWeek,
     required this.startTime,
     required this.endTime,
     required this.subjectDTO,
@@ -36,11 +36,11 @@ class ScheduleDTO {
 
       return ScheduleDTO(
         scheduleId: json['id'] ?? '',
-        date: DateTime.parse(json['date']),
+        dayOfWeek: List<String>.from(json['day_of_week'] ?? []),
         startTime: parseTime(startTimeStr),
         endTime: parseTime(endTimeStr),
-        subjectDTO: SubjectDTO.fromJson(json['subject']),
-        sessionDTO: SessionDTO.fromJson(json['sessionType']),
+        subjectDTO: SubjectDTO.fromJson(json['subject'] ?? {}),
+        sessionDTO: SessionDTO.fromJson(json['sessionType'] ?? {}),
       );
     } catch (e, stack) {
       print('❌ Failed to parse ScheduleDTO: $e');
@@ -50,14 +50,13 @@ class ScheduleDTO {
     }
   }
 
-
   Map<String, dynamic> toJson() {
     String formatTime(TimeOfDay time) =>
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
     return {
       'scheduleId': scheduleId,
-      'date': date.toIso8601String(),
+      'day_of_week': dayOfWeek,
       'start_time': formatTime(startTime),
       'end_time': formatTime(endTime),
       'subject': subjectDTO.toJson(),
@@ -68,7 +67,7 @@ class ScheduleDTO {
   Schedule toSchedule() {
     return Schedule(
       scheduleId: scheduleId,
-      date: date,
+      dayOfWeek: dayOfWeek,
       startTime: startTime,
       endTime: endTime,
       subject: subjectDTO.toSubject(),
@@ -79,7 +78,7 @@ class ScheduleDTO {
   static ScheduleDTO fromSchedule(Schedule schedule) {
     return ScheduleDTO(
       scheduleId: schedule.scheduleId,
-      date: schedule.date,
+      dayOfWeek: schedule.dayOfWeek,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       subjectDTO: SubjectDTO.fromSubject(schedule.subject),

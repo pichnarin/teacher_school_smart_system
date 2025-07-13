@@ -18,17 +18,22 @@ class ScoreWithStudent {
 
   factory ScoreWithStudent.fromJson(Map<String, dynamic> json) {
     return ScoreWithStudent(
-      score: Score.fromJson(json['score'] as Map<String, dynamic>),
-      student: StudentDTO.fromJson(json['student'] as Map<String, dynamic>).toStudent(),
-      subject: SubjectDTO.fromJson(json['subject'] as Map<String, dynamic>).toSubject(),
+      score: Score.fromJson(json),
+      student: StudentDTO.fromJson(json['student']).toStudent(),
+      subject: SubjectDTO.fromJson(json['subject']).toSubject(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'score': score.toJson(),
+      ...score.toJson(),
       'student': StudentDTO.fromStudent(student).toJson(),
       'subject': SubjectDTO.fromSubject(subject).toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return 'ScoreWithStudent(score: $score, student: $student, subject: $subject)';
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:pat_asl_portal/data/endpoint_collection.dart';
 import 'package:pat_asl_portal/util/exception/api_exception.dart';
 import 'package:pat_asl_portal/data/model/dto/class_dto.dart';
+import '../model/dto/class_session_dto.dart';
 import 'base_repository.dart';
 
 class ClassRepository {
@@ -10,14 +11,9 @@ class ClassRepository {
   ClassRepository({required BaseRepository baseRepository})
       : _baseRepository = baseRepository;
 
-  /// Fetches all assigned classes from the API
-  ///
-  /// Returns a list of ClassDTO objects
-  /// Throws [ApiException] if the request fails
-  Future<List<ClassDTO>> fetchAllAssignedClass() async {
+  Future<List<ClassDTO>> fetchAllClasses() async {
     try {
-      final response = await _baseRepository.get(EndpointCollection.allClassesEndpoint);
-
+      final response = await _baseRepository.get(EndpointCollection.allTheClasseEnpoint);
       final dynamic responseData = json.decode(response.body);
 
       if (response.statusCode != 200) {
@@ -32,7 +28,7 @@ class ClassRepository {
       }
 
       return responseData
-          .map((json) => ClassDTO.fromJson(json))
+          .map<ClassDTO>((json) => ClassDTO.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
       if (e is ApiException) rethrow;
@@ -40,7 +36,37 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassDTO>> fetchClassByDate(String date) async{
+  /// Fetches all assigned classes from the API
+  ///
+  /// Returns a list of ClassDTO objects
+  /// Throws [ApiException] if the request fails
+  Future<List<ClassSessionDTO>> fetchAllClassSessions() async {
+    try {
+      final response = await _baseRepository.get(EndpointCollection.allClassesEndpoint);
+      final dynamic responseData = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ApiException(
+          responseData is Map ? responseData['message'] ?? 'Failed to fetch class sessions' : 'Failed to fetch class sessions',
+          response.statusCode,
+        );
+      }
+
+      if (responseData is! List) {
+        throw ApiException('Unexpected response format', response.statusCode);
+      }
+
+      return responseData
+          .map<ClassSessionDTO>((json) => ClassSessionDTO.fromJson(json))
+          .toList();
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to fetch class sessions: ${e.toString()}', 500);
+    }
+  }
+
+
+  Future<List<ClassSessionDTO>> fetchClassByDate(String date) async{
     try{
       final url = EndpointCollection.classByDateEndpoint(date);
       final response = await _baseRepository.get(url);
@@ -59,7 +85,7 @@ class ClassRepository {
       }
 
       return responseData
-          .map((json) => ClassDTO.fromJson(json))
+          .map<ClassSessionDTO>((json) => ClassSessionDTO.fromJson(json))
           .toList();
 
     }catch(e){
@@ -68,7 +94,7 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassDTO>> fetchClassByRoom(String room) async{
+  Future<List<ClassSessionDTO>> fetchClassByRoom(String room) async{
     try{
       final url = EndpointCollection.classByRoomEndpoint(room);
       final response = await _baseRepository.get(url);
@@ -87,7 +113,7 @@ class ClassRepository {
       }
 
       return responseData
-          .map((json) => ClassDTO.fromJson(json))
+          .map<ClassSessionDTO>((json) => ClassSessionDTO.fromJson(json))
           .toList();
 
     }catch(e){
@@ -96,7 +122,7 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassDTO>> fetchClassByGrade(String grade) async{
+  Future<List<ClassSessionDTO>> fetchClassByGrade(String grade) async{
     try{
       final url = EndpointCollection.classByGradeEndpoint(grade);
       final response = await _baseRepository.get(url);
@@ -115,7 +141,7 @@ class ClassRepository {
       }
 
       return responseData
-          .map((json) => ClassDTO.fromJson(json))
+          .map<ClassSessionDTO>((json) => ClassSessionDTO.fromJson(json))
           .toList();
 
     }catch(e){
@@ -124,24 +150,34 @@ class ClassRepository {
     }
   }
 
-  Future<ClassDTO> fetchClassById(String classId) async {
+  Future<List<ClassSessionDTO>> fetchClassById(String classId) async {
     try {
       final url = EndpointCollection.classByIdEndpoint(classId);
       final response = await _baseRepository.get(url);
       final dynamic responseData = json.decode(response.body);
 
       if (response.statusCode != 200) {
-        final responseData = json.decode(response.body);
         throw ApiException(
           responseData is Map ? responseData['message'] ?? 'Failed to fetch class by ID' : 'Failed to fetch class by ID',
           response.statusCode,
         );
       }
 
-      return ClassDTO.fromJson(responseData);
+      if (responseData is! List) {
+        throw ApiException('Unexpected response format', response.statusCode);
+      }
+
+      return responseData
+          .map<ClassSessionDTO>((json) => ClassSessionDTO.fromJson(json as Map<String, dynamic>))
+          .toList();
+
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiException('Failed to fetch class by ID: ${e.toString()}', 500);
     }
   }
+
 }
+
+
+

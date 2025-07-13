@@ -1,25 +1,25 @@
 
-import '../../data/model/class.dart';
+import 'package:pat_asl_portal/data/model/class_session.dart';
 
-enum ClassStatus{
+enum ClassSessionStatus{
   initial,
   loading,
   loaded,
   error
 }
 
-class ClassState {
-  final ClassStatus status;
+class ClassSessionState {
+  final ClassSessionStatus status;
   final String? errorMessage;
-  final List<Class>? classes;
+  final List<ClassSession>? classes;
   final String? selectedDate;
-  final List<Class>? classFilterByDate;
+  final List<ClassSession>? classFilterByDate;
   final String? classId;
-  final List<Class>? classFilterById;
+  final ClassSession? classFilterById;
 
 
-  const ClassState({
-    this.status = ClassStatus.initial,
+  const ClassSessionState({
+    this.status = ClassSessionStatus.initial,
     this.errorMessage,
     this.classes,
     this.selectedDate,
@@ -29,19 +29,19 @@ class ClassState {
 
   });
 
-  ClassState copyWith({
-    ClassStatus? status,
+  ClassSessionState copyWith({
+    ClassSessionStatus? status,
     String? errorMessage,
-    List<Class>? classes,
+    List<ClassSession>? classes,
     String? selectedDate,
-    List<Class>? classFilterByDate,
+    List<ClassSession>? classFilterByDate,
     String? classId,
-    List<Class>? classFilterById,
+    ClassSession? classFilterById,
   }) {
-    return ClassState(
+    return ClassSessionState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      classes: classes ?? this.classes,
+      classes:  classes ?? this.classes,
       selectedDate: selectedDate ?? this.selectedDate,
       classFilterByDate: classFilterByDate ?? this.classFilterByDate,
       classId: classId ?? this.classId,

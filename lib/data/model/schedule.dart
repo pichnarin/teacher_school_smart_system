@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pat_asl_portal/data/model/subject.dart';
 import 'package:pat_asl_portal/data/model/session.dart';
 
-class Schedule{
+class Schedule {
   final String scheduleId;
-  final DateTime date;
+  final List<String> dayOfWeek; // Updated to represent recurring days
   final TimeOfDay startTime;
   final TimeOfDay endTime;
   final Subject subject;
@@ -12,16 +12,15 @@ class Schedule{
 
   const Schedule({
     required this.scheduleId,
-    required this.date,
+    required this.dayOfWeek,
     required this.startTime,
     required this.endTime,
     required this.subject,
     required this.session,
   });
 
-
   String get getScheduleId => scheduleId;
-  String get getDateWithTimeZone => date.toUtc().toIso8601String();
+  List<String> get getDayOfWeek => dayOfWeek;
   String get getStartTime => startTime.toString();
   String get getEndTime => endTime.toString();
   String get getSubjectId => subject.subjectId;
@@ -30,6 +29,6 @@ class Schedule{
 
   @override
   String toString() {
-    return 'Schedule(scheduleId: $scheduleId, date: $date, startTime: $startTime, endTime: $endTime, subject: $subject, session: $session)';
+    return 'Schedule(scheduleId: $scheduleId, dayOfWeek: $dayOfWeek, startTime: $startTime, endTime: $endTime, subject: $subject, session: $session)';
   }
 }

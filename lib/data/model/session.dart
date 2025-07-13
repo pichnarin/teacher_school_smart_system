@@ -1,7 +1,7 @@
 enum SessionType {
-  morning('Morning Session'),
-  afternoon('Afternoon Session'),
-  evening('Evening Session');
+  lab('Lab Session'),
+  lecture('Lecture Session'),
+  exam('Exam Session');
 
   final String name;
   const SessionType(this.name);
@@ -10,17 +10,16 @@ enum SessionType {
 
   static SessionType fromString(String value) {
     switch (value.toLowerCase()) {
-      case 'morning':
-        return SessionType.morning;
-      case 'afternoon':
-        return SessionType.afternoon;
-      case 'evening':
-        return SessionType.evening;
+      case 'lab':
+        return SessionType.lab;
+      case 'lecture':
+        return SessionType.lecture;
+      case 'exam':
+        return SessionType.exam;
       default:
         throw ArgumentError('Invalid session type: $value');
     }
   }
-
 }
 
 class Session{

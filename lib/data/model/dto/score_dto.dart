@@ -76,40 +76,61 @@ class SetExamScoresDto {
   final String subjectId;
   final int examMonth;
   final int examYear;
-  final double maxScore;
+  final double? maxScore; // Make optional since it can be per-student
   final List<StudentScoreInput> studentScores;
 
   const SetExamScoresDto({
     required this.subjectId,
     required this.examMonth,
     required this.examYear,
-    required this.maxScore,
+    this.maxScore,
     required this.studentScores,
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final Map<String, dynamic> data = {
       'subject_id': subjectId,
       'exam_month': examMonth,
       'exam_year': examYear,
-      'max_score': maxScore,
-      'student_scores': studentScores.map((e) => e.toJson()).toList(),
+      'examScores': studentScores.map((e) => e.toJson()).toList(), // Changed from 'student_scores' to 'examScores'
     };
+
+    // Only include max_score if provided
+    if (maxScore != null) {
+      data['max_score'] = maxScore;
+    }
+
+    return data;
   }
 }
 
 class StudentScoreInput {
   final String studentId;
   final double score;
+  final double? maxScore; // Add optional maxScore
   final String? remarks;
 
   const StudentScoreInput({
     required this.studentId,
     required this.score,
+    this.maxScore,
     this.remarks,
   });
 
   Map<String, dynamic> toJson() {
-    return {'student_id': studentId, 'score': score, 'remarks': remarks};
+    final Map<String, dynamic> data = {
+      'student_id': studentId,
+      'score': score,
+    };
+
+    if (maxScore != null) {
+      data['max_score'] = maxScore;
+    }
+
+    if (remarks != null) {
+      data['remarks'] = remarks;
+    }
+
+    return data;
   }
 }

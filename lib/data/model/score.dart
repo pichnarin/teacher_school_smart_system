@@ -40,7 +40,7 @@ class Score {
 
   factory Score.fromJson(Map<String, dynamic> json) {
     return Score(
-      scoreId: json['score_id'] as String,
+      scoreId: json['id'] as String,
       studentId: json['student_id'] as String,
       classId: json['class_id'] as String,
       subjectId: json['subject_id'] as String,
@@ -49,14 +49,14 @@ class Score {
       score: (json['score'] as num).toDouble(),
       maxScore: (json['max_score'] as num).toDouble(),
       remarks: json['remarks'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'score_id': scoreId,
+      'id': scoreId,
       'student_id': studentId,
       'class_id': classId,
       'subject_id': subjectId,
@@ -65,8 +65,8 @@ class Score {
       'score': score,
       'max_score': maxScore,
       'remarks': remarks,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -96,5 +96,10 @@ class Score {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Score(scoreId: $scoreId, studentId: $studentId, classId: $classId, subjectId: $subjectId, examMonth: $examMonth, examYear: $examYear, score: $score, maxScore: $maxScore, remarks: $remarks, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
