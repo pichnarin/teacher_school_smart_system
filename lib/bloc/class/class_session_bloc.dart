@@ -4,10 +4,10 @@ import 'package:pat_asl_portal/bloc/class_session/class_session_state.dart';
 import 'package:pat_asl_portal/data/service/class_session_service.dart';
 
 class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
-  final ClassService _classService;
+  final ClassSessionService _classService;
 
   ClassSessionBloc({
-    required ClassService classService,
+    required ClassSessionService classService,
   })  : _classService = classService,
         super(const ClassSessionState()) {
     on<FetchClassSessions>(_onFetchSessionClass);
