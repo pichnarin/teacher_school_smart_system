@@ -26,6 +26,7 @@ class Score {
   });
 
   double get percentage => (score / maxScore) * 100;
+  double get getScore => score;
 
   String get grade {
     final percentage = this.percentage;
@@ -40,17 +41,21 @@ class Score {
 
   factory Score.fromJson(Map<String, dynamic> json) {
     return Score(
-      scoreId: json['id'] as String,
-      studentId: json['student_id'] as String,
-      classId: json['class_id'] as String,
-      subjectId: json['subject_id'] as String,
-      examMonth: json['exam_month'] as int,
-      examYear: json['exam_year'] as int,
-      score: (json['score'] as num).toDouble(),
-      maxScore: (json['max_score'] as num).toDouble(),
-      remarks: json['remarks'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      scoreId: json['id']?.toString() ?? '',
+      studentId: json['student_id']?.toString() ?? '',
+      classId: json['class_id']?.toString() ?? '',
+      subjectId: json['subject_id']?.toString() ?? '',
+      examMonth: json['exam_month'] ?? 0,
+      examYear: json['exam_year'] ?? 0,
+      score: (json['score'] ?? 0).toDouble(),
+      maxScore: (json['max_score'] ?? 0).toDouble(),
+      remarks: json['remarks']?.toString(),
+      createdAt: DateTime.parse(
+        json['created_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updated_at']?.toString() ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 
@@ -65,8 +70,8 @@ class Score {
       'score': score,
       'max_score': maxScore,
       'remarks': remarks,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 

@@ -1,37 +1,36 @@
 import 'package:pat_asl_portal/data/model/schedule.dart';
+import 'package:pat_asl_portal/data/model/subject.dart';
+import 'package:pat_asl_portal/data/model/subject_level.dart';
 import 'package:pat_asl_portal/data/model/teacher.dart';
 import 'package:pat_asl_portal/data/model/room.dart';
 import 'package:pat_asl_portal/data/model/class_session.dart';
 
 class Class {
   final String classId;
-  final String classGrade;
-  final Schedule schedule;
-  final Room room;
   final Teacher teacher;
-  // final int? studentCount;
+  final int? studentCount;
+  final Subject subject;
+  final SubjectLevel subjectLevel;
   // final List<ClassSession> classSessions;
 
   const Class({
     required this.classId,
-    required this.classGrade,
-    required this.schedule,
-    required this.room,
     required this.teacher,
-    // this.studentCount,
+    this.studentCount,
+    required this.subject,
+    required this.subjectLevel,
     // required this.classSessions,
   });
 
   String get getClassId => classId;
-  String get getClassGrade => classGrade;
-  String get getScheduleId => schedule.getScheduleId;
-  String get getRoomId => room.getRoomId;
   String get getTeacherId => teacher.getTeacherId;
-  // int? get getStudentCount => studentCount;
+  int? get getStudentCount => studentCount;
+  Subject get getSubject => subject;
+  SubjectLevel get getSubjectLevel => subjectLevel;
   // List<ClassSession> get getClassSessions => classSessions;
 
   @override
   String toString() {
-    return 'Class(classId: $classId, classGrade: $classGrade, schedule: $schedule, room: $room, teacher: $teacher)';
+    return 'Class(classId: $classId, teacher: $teacher, studentCount: $studentCount, subject: $subject, subjectLevel: $subjectLevel)';
   }
 }

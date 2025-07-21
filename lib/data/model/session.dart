@@ -8,17 +8,11 @@ enum SessionType {
   @override
   String toString() => name;
 
-  static SessionType fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'lab':
-        return SessionType.lab;
-      case 'lecture':
-        return SessionType.lecture;
-      case 'exam':
-        return SessionType.exam;
-      default:
-        throw ArgumentError('Invalid session type: $value');
-    }
+  static SessionType fromString(String type) {
+    return SessionType.values.firstWhere(
+          (e) => e.name == type.toLowerCase(),
+      orElse: () => SessionType.lecture,
+    );
   }
 }
 
