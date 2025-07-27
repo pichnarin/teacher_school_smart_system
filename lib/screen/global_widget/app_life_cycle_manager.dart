@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/class/class_bloc.dart';
-import '../../bloc/class/class_event.dart';
+import '../../bloc/class_session/class_session_bloc.dart';
+import '../../bloc/class_session/class_session_event.dart';
 import '../../main.dart';
 
 class AppLifecycleManager extends StatefulWidget {
@@ -33,8 +33,8 @@ class AppLifecycleManagerState extends State<AppLifecycleManager> with WidgetsBi
       // Reconnect WebSocket and refresh data
       webSocketService.handleAppResume();
       // Refresh current classes
-      final classBloc = BlocProvider.of<ClassBloc>(context);
-      classBloc.add(const FetchClasses());
+      final classBloc = BlocProvider.of<ClassSessionBloc>(context);
+      classBloc.add(const FetchClassSessions());
     }
   }
 

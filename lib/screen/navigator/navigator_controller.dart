@@ -1,8 +1,8 @@
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:pat_asl_portal/screen/navigator/tab_navigator.dart';
 import 'package:pat_asl_portal/screen/profile/profile_screen.dart';
+import 'package:pat_asl_portal/screen/record/record_screen.dart';
 import 'package:pat_asl_portal/screen/schedule/schedule_screen.dart';
 import '../home/home_screen.dart';
 
@@ -22,7 +22,7 @@ class NavigatorController extends GetxController {
 
   final List<Widget> screens = [
     TabNavigator(index: 0, child: HomeScreen()),
-    TabNavigator(index: 1, child: Container(color: Colors.green)),
+    TabNavigator(index: 1, child: RecordScreen()),
     TabNavigator(index: 2, child: ScheduleScreen()),
     TabNavigator(index: 3, child: Container(color: Colors.purple)),
     TabNavigator(index: 4, child: ProfileScreen()),

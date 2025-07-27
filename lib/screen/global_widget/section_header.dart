@@ -4,12 +4,14 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final Color? color;
   final VoidCallback? onSeeAll;
+  final Text? buttonText;
 
   const SectionHeader({
     super.key,
     required this.title,
     this.color = Colors.black,
     this.onSeeAll,
+    this.buttonText,
   });
 
   @override
@@ -24,7 +26,7 @@ class SectionHeader extends StatelessWidget {
         if (onSeeAll != null)
           TextButton(
             onPressed: onSeeAll,
-            child: const Text('See All'),
+            child: buttonText ?? const Text('See All', style: TextStyle(color: Colors.blue)),
           ),
       ],
     );

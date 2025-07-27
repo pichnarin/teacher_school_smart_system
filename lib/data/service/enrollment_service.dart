@@ -25,11 +25,11 @@ class EnrollmentService {
   }
 
   // Fetch attendance records for a class on a specific date
-  Future<List<CheckedAttendanceRecord>> getAttendanceByClassAndDate({
+  Future<List<CheckedAttendanceRecord>> getAttendanceByClassSession({
     required String classId,
-    required String date,
+    required String classSessionId,
   }) async {
-    return await _repository.getAttendanceByClassAndDate(classId: classId, date: date);
+    return await _repository.getAttendanceByClassSession(classId: classId, classSessionId: classSessionId);
   }
 
 }

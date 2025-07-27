@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:pat_asl_portal/data/model/dto/class_attendance_dto.dart';
 
 import '../../util/exception/api_exception.dart';
@@ -117,6 +118,8 @@ class EnrollmentRepository {
 
       final response = await _baseRepository.patch(url, body);
 
+      debugPrint("Patch Attendance Response: ${response.body}");
+
       if (![200, 204].contains(response.statusCode)) {
         String message = 'Failed to update attendance';
         try {
@@ -134,12 +137,11 @@ class EnrollmentRepository {
     }
   }
 
-  Future<List<CheckedAttendanceRecord>> getAttendanceByClassAndDate({
+  Future<List<CheckedAttendanceRecord>> getAttendanceByClassSession({
     required String classId,
-    required String date,
+    required String classSessionId,
   }) async {
-
-    final uri = EndpointCollection.getAttendanceByClass(classId, date);
+    final uri = EndpointCollection.getAttendanceByClassSession(classId, classSessionId);
 
     final response = await _baseRepository.get(uri);
 

@@ -1,5 +1,4 @@
 import 'package:pat_asl_portal/data/model/dto/student_dto.dart';
-
 import '../daily_evaluation.dart';
 import 'class_session_dto.dart';
 
@@ -29,7 +28,7 @@ class DailyEvaluationDTO {
     return DailyEvaluationDTO(
       id: json['id'] ?? '',
       student: StudentDTO.fromJson(json['student'] ?? {}),
-      classSession: ClassSessionDTO.fromJson(json['class_session'] ?? {}),
+      classSession: ClassSessionDTO.fromJson(json['classSession'] ?? {}),
       homework: json['homework'] ?? '',
       clothing: json['clothing'] ?? '',
       attitude: json['attitude'] ?? '',
@@ -82,7 +81,6 @@ class DailyEvaluationDTO {
     return 'DailyEvaluationDTO(id: $id, student: $student, classSession: $classSession, homework: $homework, clothing: $clothing, attitude: $attitude, classActivity: $classActivity, overallScore: $overallScore)';
   }
 }
-
 
 class DailyEvaluationPatch {
   final String id;
@@ -141,7 +139,6 @@ class PatchDailyEvaluationsDto {
   }
 
 }
-
 
 class DailyEvaluationCreateDTO {
   final String studentId;

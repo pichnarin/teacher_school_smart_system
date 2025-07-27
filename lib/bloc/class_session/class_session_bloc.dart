@@ -7,8 +7,8 @@ class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
   final ClassSessionService _classService;
 
   ClassSessionBloc({
-    required ClassSessionService classService,
-  })  : _classService = classService,
+    required ClassSessionService classSessionService,
+  })  : _classService = classSessionService,
         super(const ClassSessionState()) {
     on<FetchClassSessions>(_onFetchSessionClass);
     on<FetchClassSessionsByDate>(_onFetchClassSessionByDate);
@@ -22,18 +22,18 @@ class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
       FetchClassSessions event,
       Emitter<ClassSessionState> emit,
       ) async {
-    emit(state.copyWith(status: ClassSessionStatus.loading));
+    emit(state.copyWith(status: ClassStatus.loading));
 
     try {
       final classSessions = await _classService.getAllAssignedClassSessions();
 
       emit(state.copyWith(
-        status: ClassSessionStatus.loaded,
+        status: ClassStatus.loaded,
         classes: classSessions,
       ));
     } catch (e) {
       emit(state.copyWith(
-        status: ClassSessionStatus.error,
+        status: ClassStatus.error,
         errorMessage: e.toString(),
       ));
     }
@@ -44,21 +44,21 @@ class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
       FetchClassSessionsByDate event,
       Emitter<ClassSessionState> emit,
       ) async {
-    emit(state.copyWith(status: ClassSessionStatus.loading));
+    emit(state.copyWith(status: ClassStatus.loading));
 
     try {
       final classSessions = await _classService.getClasseSessionByDate(event.date);
       // debugPrint("Classes for date ${event.date}: $classes");
 
       emit(state.copyWith(
-        status: ClassSessionStatus.loaded,
+        status: ClassStatus.loaded,
         classFilterByDate: classSessions,
         selectedDate: event.date,
       ));
     } catch (e) {
       // debugPrint("Error fetching classes by date: $e");
       emit(state.copyWith(
-        status: ClassSessionStatus.error,
+        status: ClassStatus.error,
         errorMessage: e.toString(),
       ));
     }
@@ -69,7 +69,7 @@ class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
       FetchClassSessionById event,
       Emitter<ClassSessionState> emit,
       ) async {
-    emit(state.copyWith(status: ClassSessionStatus.loading));
+    emit(state.copyWith(status: ClassStatus.loading));
     try {
       final classSessions = await _classService.getClassSessionByID(event.classId);
 
@@ -77,13 +77,13 @@ class ClassSessionBloc extends Bloc<ClassSessionEvent, ClassSessionState> {
       final classSession = classSessions.isNotEmpty ? classSessions.first : null;
 
       emit(state.copyWith(
-        status: ClassSessionStatus.loaded,
+        status: ClassStatus.loaded,
         classFilterById: classSession,
         classId: event.classId,
       ));
     } catch (e) {
       emit(state.copyWith(
-        status: ClassSessionStatus.error,
+        status: ClassStatus.error,
         errorMessage: e.toString(),
       ));
     }

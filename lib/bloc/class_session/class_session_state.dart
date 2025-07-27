@@ -1,7 +1,7 @@
 
 import 'package:pat_asl_portal/data/model/class_session.dart';
 
-enum ClassSessionStatus{
+enum ClassStatus{
   initial,
   loading,
   loaded,
@@ -9,7 +9,7 @@ enum ClassSessionStatus{
 }
 
 class ClassSessionState {
-  final ClassSessionStatus status;
+  final ClassStatus status;
   final String? errorMessage;
   final List<ClassSession>? classes;
   final String? selectedDate;
@@ -19,7 +19,7 @@ class ClassSessionState {
 
 
   const ClassSessionState({
-    this.status = ClassSessionStatus.initial,
+    this.status = ClassStatus.initial,
     this.errorMessage,
     this.classes,
     this.selectedDate,
@@ -30,7 +30,7 @@ class ClassSessionState {
   });
 
   ClassSessionState copyWith({
-    ClassSessionStatus? status,
+    ClassStatus? status,
     String? errorMessage,
     List<ClassSession>? classes,
     String? selectedDate,

@@ -1,40 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:pat_asl_portal/data/endpoint_collection.dart';
 import 'package:pat_asl_portal/util/exception/api_exception.dart';
-import 'package:pat_asl_portal/data/model/dto/class_dto.dart';
 import '../model/dto/class_session_dto.dart';
 import 'base_repository.dart';
 
-class ClassRepository {
+class ClassSessionRepository {
   final BaseRepository _baseRepository;
 
-  ClassRepository({required BaseRepository baseRepository})
+  ClassSessionRepository({required BaseRepository baseRepository})
       : _baseRepository = baseRepository;
-
-  Future<List<ClassDTO>> fetchAllClasses() async {
-    try {
-      final response = await _baseRepository.get(EndpointCollection.allTheClasseEnpoint);
-      final dynamic responseData = json.decode(response.body);
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          responseData is Map ? responseData['message'] ?? 'Failed to fetch classes' : 'Failed to fetch classes',
-          response.statusCode,
-        );
-      }
-
-      if (responseData is! List) {
-        throw ApiException('Unexpected response format', response.statusCode);
-      }
-
-      return responseData
-          .map<ClassDTO>((json) => ClassDTO.fromJson(json as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiException('Failed to fetch classes: ${e.toString()}', 500);
-    }
-  }
 
   /// Fetches all assigned classes from the API
   ///
@@ -42,7 +17,7 @@ class ClassRepository {
   /// Throws [ApiException] if the request fails
   Future<List<ClassSessionDTO>> fetchAllClassSessions() async {
     try {
-      final response = await _baseRepository.get(EndpointCollection.allClassesEndpoint);
+      final response = await _baseRepository.get(EndpointCollection.allClassSessionEndpoint);
       final dynamic responseData = json.decode(response.body);
 
       if (response.statusCode != 200) {
@@ -66,9 +41,9 @@ class ClassRepository {
   }
 
 
-  Future<List<ClassSessionDTO>> fetchClassByDate(String date) async{
+  Future<List<ClassSessionDTO>> fetchClassSessionByDate(String date) async{
     try{
-      final url = EndpointCollection.classByDateEndpoint(date);
+      final url = EndpointCollection.classSessionByDateEndpoint(date);
       final response = await _baseRepository.get(url);
       final dynamic responseData = json.decode(response.body);
 
@@ -94,9 +69,9 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassSessionDTO>> fetchClassByRoom(String room) async{
+  Future<List<ClassSessionDTO>> fetchClassSessionByRoom(String room) async{
     try{
-      final url = EndpointCollection.classByRoomEndpoint(room);
+      final url = EndpointCollection.classSessionByRoomEndpoint(room);
       final response = await _baseRepository.get(url);
       final dynamic responseData = json.decode(response.body);
 
@@ -122,9 +97,9 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassSessionDTO>> fetchClassByGrade(String grade) async{
+  Future<List<ClassSessionDTO>> fetchClassSessionByGrade(String grade) async{
     try{
-      final url = EndpointCollection.classByGradeEndpoint(grade);
+      final url = EndpointCollection.classSessionByGradeEndpoint(grade);
       final response = await _baseRepository.get(url);
       final dynamic responseData = json.decode(response.body);
 
@@ -150,9 +125,9 @@ class ClassRepository {
     }
   }
 
-  Future<List<ClassSessionDTO>> fetchClassById(String classId) async {
+  Future<List<ClassSessionDTO>> fetchClassSessionById(String classId) async {
     try {
-      final url = EndpointCollection.classByIdEndpoint(classId);
+      final url = EndpointCollection.classSessionByIdEndpoint(classId);
       final response = await _baseRepository.get(url);
       final dynamic responseData = json.decode(response.body);
 

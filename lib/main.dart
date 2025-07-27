@@ -1,29 +1,41 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:pat_asl_portal/bloc/class/class_bloc.dart';
+import 'package:pat_asl_portal/bloc/class_session/class_session_bloc.dart';
+import 'package:pat_asl_portal/bloc/class_session/class_session_event.dart';
+import 'package:pat_asl_portal/bloc/daily_evaluation/daily_evaluation_bloc.dart';
+import 'package:pat_asl_portal/bloc/enrollment/enrollment_event.dart';
+import 'package:pat_asl_portal/data/repository/daily_evaluation_repository.dart';
+import 'package:pat_asl_portal/data/repository/exam_record_repository.dart';
+import 'package:pat_asl_portal/data/service/daily_evaluation_service.dart';
+import 'package:pat_asl_portal/data/service/session_service.dart';
 import 'package:pat_asl_portal/screen/global_widget/app_life_cycle_manager.dart';
 import 'package:pat_asl_portal/screen/navigator/navigator_controller.dart';
 import 'package:pat_asl_portal/screen/splash/splash_screen.dart';
 import 'package:pat_asl_portal/util/checker/wifi_info.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/auth/auth_event.dart';
+import 'bloc/class/class_event.dart';
+import 'bloc/class_session/class_session_state.dart';
+import 'bloc/daily_evaluation/daily_evaluation_event.dart';
 import 'bloc/enrollment/enrollment_bloc.dart';
-import 'bloc/enrollment/enrollment_event.dart';
-import 'bloc/enrollment/enrollment_state.dart';
-import 'data/model/attendance_record.dart';
-import 'data/model/class_attendance.dart';
-import 'data/model/dto/class_attendance_dto.dart';
+import 'bloc/exam_record/exam_record_bloc.dart';
+import 'bloc/exam_record/exam_record_event.dart';
+import 'bloc/get_active_class_session/session.bloc.dart';
+import 'data/model/dto/daily_evaluation_dto.dart';
 import 'data/repository/auth/auth_repository.dart';
 import 'data/repository/base_repository.dart';
 import 'data/repository/class_repository.dart';
+import 'data/repository/class_session_repository.dart';
 import 'data/repository/enrollment_repository.dart';
+import 'data/repository/session_repository.dart';
 import 'data/service/auth/auth_service.dart';
 import 'data/service/class_service.dart';
+import 'data/service/class_session_service.dart';
 import 'data/service/enrollment_service.dart';
+import 'data/service/exam_record_service.dart';
 import 'data/service/web_socket/web_socket_service.dart';
 import 'data/user_local_storage/secure_storage.dart';
 
@@ -33,78 +45,140 @@ final webSocketService = WebSocketService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await getNetworkInfo();
-
-  try {
-    // Initialize dependencies
-    final baseRepository = BaseRepository(http.Client(), secureLocalStorage);
-    final enrollmentRepository = EnrollmentRepository(baseRepository: baseRepository);
-    final enrollmentService = EnrollmentService(repository: enrollmentRepository);
-
-    // Create the Bloc
-    final enrollmentBloc = EnrollmentBloc(enrollmentService: enrollmentService);
-
-    // // Stream subscription to listen for state changes
-    // final subscription = enrollmentBloc.stream.listen((state) {
-    //   print('Current state: ${state.status}');
-    //   if (state.status == EnrollmentStatus.attendanceSubmitted) {
-    //     print('Attendance successfully submitted!');
-    //     print('Attendance records: ${state.attendanceRecords}');
-    //   } else if (state.status == EnrollmentStatus.attendanceError) {
-    //     print('Error submitting attendance: ${state.errorMessage}');
-    //   }
-    // });
-
-    // Test data
-    final testDate = "2025-07-04"; // Use a valid date format
-    final testClassID = '609fc331-b412-4d9c-9a83-9f93505b754d';
-
-    final resulr = enrollmentService.getAttendanceByClassAndDate(classId: testClassID, date: testDate);
-
-    print(resulr);
-
-    // // Create test attendance records
-    // final attendanceRecords = [
-    //   AttendanceRecord(studentId: "2b33561f-d021-43d8-bc2b-968972fb87de", status: "present"),
-    //   AttendanceRecord(studentId: "f6c62ef1-68c3-406d-97fe-78784e00ea5e", status: "absent"),
-    //   AttendanceRecord(studentId: "756daba4-add6-4d54-b0af-3496c8370c59", status: "present"),
-    //   AttendanceRecord(studentId: "99438ce6-7e1a-4e67-8fd8-4e8a4cbfe3f8", status: "absent"),
-    // ];
-
-    // // Create ClassAttendanceDTO directly
-    // final attendanceDTO = ClassAttendanceDTO(
-    //   classId: testClassID,
-    //   date: testDate,
-    //   attendanceRecords: attendanceRecords,
-    // );
-
-    // // First, load the enrollments for the class to populate the bloc state
-    // enrollmentBloc.add(FetchEnrollmentsByClassId(testClassID));
-    //
-    // // Wait a bit to ensure the fetch completes
-    // await Future.delayed(const Duration(seconds: 2));
-    //
-    // // Now dispatch the MarkAttendance event
-    // enrollmentBloc.add(MarkAttendance(attendanceDTO));
-    //
-    // // Wait to see the result
-    // await Future.delayed(const Duration(seconds: 3));
-    //
-    // // Clean up
-    // await subscription.cancel();
-
-  } catch(e) {
-    print('Error in test: $e');
-  }
-
-  // 28539131-2ac2-4ddd-a256-86e6e7d90af2
-
-  // Initialize the WebSocketService with token if available
   final token = await secureLocalStorage.retrieveToken();
   if (token != null) {
     webSocketService.initialize(token);
   }
+
+  // try{
+  //   final baseRepository = BaseRepository(http.Client(), secureLocalStorage);
+  //   final repo = ClassRepository(baseRepository: baseRepository);
+  //   final service = ClassService(repository: repo);
+  //   final bloc = ClassBloc(classService: service);
+  //
+  //   final String classId = "99943cf4-8567-47a2-ba8e-5f48a663c3e3";
+  //   final String month = "1";
+  //   final String year = "2025";
+  //
+  //   final subscription = bloc.stream.listen((state) {
+  //     debugPrint('Bloc State: $state');
+  //     debugPrint('Student Report: ${state.studentReports}');
+  //   });
+  //
+  //   await Future.delayed(const Duration(seconds: 2));
+  //
+  //   bloc.add(FetchStudentReport(
+  //     classId: classId,
+  //     reportMonth: month,
+  //     reportYear: year,
+  //   ));
+  //
+  //
+  // }catch(error){
+  //   debugPrint('Stacktrace: $error');
+  // }
+
+  // try {
+  //   final baseRepository = BaseRepository(http.Client(), secureLocalStorage);
+  //   final repo = DailyEvaluationRepository(baseRepository: baseRepository);
+  //   final service = DailyEvaluationService(dailyEvaluationRepository: repo);
+  //   final bloc = DailyEvaluationBloc(service);
+  //
+  //   final subscription = bloc.stream.listen((state) {
+  //     debugPrint('Bloc State: $state');
+  //   });
+  //
+  //   bloc.add(CheckDailyEvaluationExist("0b8c71c5-4998-47d1-8351-c5df5c259ae5"));
+  //
+  //   final payload = [
+  //     DailyEvaluationCreateDTO(
+  //       studentId: "f0056ec4-0cca-4002-98ba-4870ce9847c2",
+  //       homework: "perfect",
+  //       clothing: "perfect",
+  //       attitude: "perfect",
+  //       classActivity: 9,
+  //     ),
+  //     DailyEvaluationCreateDTO(
+  //       studentId: "7d5c80e5-dc68-4dd3-9c66-d8e80b6685ab",
+  //       homework: "good",
+  //       clothing: "average",
+  //       attitude: "good",
+  //       classActivity: 7,
+  //     ),
+  //     DailyEvaluationCreateDTO(
+  //       studentId: "7912d7d3-9765-4735-bcc9-8d24c1509264",
+  //       homework: "good",
+  //       clothing: "average",
+  //       attitude: "good",
+  //       classActivity: 7,
+  //     ),
+  //     DailyEvaluationCreateDTO(
+  //       studentId: "37d7e35e-e3c7-418a-8b14-a4e9914544a2",
+  //       homework: "good",
+  //       clothing: "average",
+  //       attitude: "good",
+  //       classActivity: 7,
+  //     ),
+  //     DailyEvaluationCreateDTO(
+  //       studentId: "ea503117-cd20-475d-b7b8-063cf6d0027c",
+  //       homework: "good",
+  //       clothing: "average",
+  //       attitude: "good",
+  //       classActivity: 7,
+  //     ),
+  //   ];
+  //
+  //   bloc.add(CreateDailyEvaluations("0b8c71c5-4998-47d1-8351-c5df5c259ae5", payload));
+  //
+  //   bloc.add(FetchDailyEvaluations("99de050d-b4e2-4eea-8051-b6e895ab7f23", "2025-07-19"));
+  //
+  //   final patchPayload = [
+  //     DailyEvaluationPatch(
+  //       id: "7bd4d1f9-1402-480a-a865-225e89c2b2b0",
+  //       homework: "average",
+  //       clothing: "average",
+  //       attitude: "average",
+  //       classActivity: 9,
+  //     ),
+  //     DailyEvaluationPatch(
+  //       id: "4571897f-7fbc-4b4a-983a-d61f53929d70",
+  //       homework: "average",
+  //       clothing: "average",
+  //       attitude: "average",
+  //       classActivity: 8,
+  //     ),
+  //     DailyEvaluationPatch(
+  //       id: "c0ac0cdd-f300-4b6c-9fd2-45c9edf18b19",
+  //       homework: "average",
+  //       clothing: "average",
+  //       attitude: "average",
+  //       classActivity: 8,
+  //     ),
+  //     DailyEvaluationPatch(
+  //       id: "8c1e59cf-72fd-40d0-9371-4b9f2c2e9f15",
+  //       homework: "average",
+  //       clothing: "average",
+  //       attitude: "average",
+  //       classActivity: 8,
+  //     ),
+  //     DailyEvaluationPatch(
+  //       id: "357ea9d7-9d8d-49f5-a58f-17396930c5f4",
+  //       homework: "average",
+  //       clothing: "average",
+  //       attitude: "average",
+  //       classActivity: 8,
+  //     )
+  //   ];
+  //
+  //   final patchPayloadMap = patchPayload.map((e) => e.toJson()).toList();
+  //   bloc.add(PatchDailyEvaluations(patchPayloadMap));
+  //
+  //   bloc.add(FetchDailyEvaluations("99de050d-b4e2-4eea-8051-b6e895ab7f23", "2025-07-19"));
+  //
+  // } catch (e) {
+  //   debugPrint('Error fetching classes: $e');
+  // }
 
   // Register navigator controller
   Get.put(NavigatorController());
@@ -134,6 +208,66 @@ class MyApp extends StatelessWidget {
           // ClassBloc to include WebSocketService
           BlocProvider(
             create:
+                (context) => ClassSessionBloc(
+                  classSessionService: ClassSessionService(
+                    repository: ClassSessionRepository(
+                      baseRepository: BaseRepository(
+                        http.Client(),
+                        secureLocalStorage,
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+
+          // EnrollmentBloc to handle enrollment data
+          BlocProvider(
+            create:
+                (context) => EnrollmentBloc(
+                  enrollmentService: EnrollmentService(
+                    repository: EnrollmentRepository(
+                      baseRepository: BaseRepository(
+                        http.Client(),
+                        secureLocalStorage,
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+
+          //RecordBloc to handle record data
+          BlocProvider(
+            create:
+                (context) => ExamRecordBloc(
+                  recordService: ExamRecordService(
+                    repository: ExamRecordRepository(
+                      baseRepository: BaseRepository(
+                        http.Client(),
+                        secureLocalStorage,
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+
+          // SessionBloc to manage class sessions
+          BlocProvider(
+            create:
+                (context) => SessionBloc(
+                  sessionService: SessionService(
+                    sessionRepository: SessionRepository(
+                      baseRepository: BaseRepository(
+                        http.Client(),
+                        secureLocalStorage,
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+
+          // ClassBloc to manage class data
+          BlocProvider(
+            create:
                 (context) => ClassBloc(
                   classService: ClassService(
                     repository: ClassRepository(
@@ -143,22 +277,21 @@ class MyApp extends StatelessWidget {
                       ),
                     ),
                   ),
-                  webSocketService: webSocketService,
-                ),
+                )..add(const FetchClasses()),
           ),
-
-          // EnrollmentBloc to handle enrollment data
+          // DailyEvaluationBloc to manage daily evaluations
           BlocProvider(
-            create: (context) => EnrollmentBloc(
-              enrollmentService: EnrollmentService(
-                repository: EnrollmentRepository(
-                  baseRepository: BaseRepository(
-                    http.Client(),
-                    secureLocalStorage,
+            create:
+                (context) => DailyEvaluationBloc(
+                  service: DailyEvaluationService(
+                    dailyEvaluationRepository: DailyEvaluationRepository(
+                      baseRepository: BaseRepository(
+                        http.Client(),
+                        secureLocalStorage,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
           ),
         ],
         child: AppLifecycleManager(

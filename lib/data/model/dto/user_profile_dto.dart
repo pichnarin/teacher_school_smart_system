@@ -1,4 +1,7 @@
+import 'package:intl/intl.dart';
 import 'package:pat_asl_portal/data/model/user_profile.dart';
+
+import '../../../util/formatter/time_of_the_day_formater.dart';
 
 class UserProfileDTO {
   final String id;
@@ -23,7 +26,7 @@ class UserProfileDTO {
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',
       gender: json['gender'] ?? '',
-      dob: DateTime.tryParse(json['dob'] ?? '') ?? DateTime(1970),
+      dob: json['dob'] != null ? DateFormat('yyyy-MM-dd').parse(json['dob']) : DateTime(1970),
       isSuspended: json['is_suspended'] ?? false,
     );
   }

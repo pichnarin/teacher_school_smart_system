@@ -123,4 +123,9 @@ class ClassSessionDTO {
       sessionType: SessionDTO.fromSession(session.sessionType), // Pass the Session object
     );
   }
+
+  @override
+  String toString() {
+    return 'ClassSessionDTO(sessionId: $sessionId, sessionDate: $sessionDate, startTime: $startTime, endTime: $endTime, status: $status, notes: $notes, isCurrent: $isCurrent, classInfo: $classInfo, studentCount: $studentCount, room: $room, subject: $subject, sessionType: $sessionType, gradingLocked: $gradingLocked)';
+  }
 }

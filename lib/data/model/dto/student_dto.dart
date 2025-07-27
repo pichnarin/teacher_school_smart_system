@@ -1,3 +1,7 @@
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:pat_asl_portal/util/formatter/time_of_the_day_formater.dart';
+
 import '../student.dart';
 
 class StudentDTO {
@@ -18,19 +22,20 @@ class StudentDTO {
   });
 
   factory StudentDTO.fromJson(Map<String, dynamic> json) {
+
     return StudentDTO(
       id: json['id'] ?? '',
       studentNumber: json['no'] ?? '',
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',
       grade: json['grade'] ?? '',
-      dob: json['dob'] != null ? DateTime.parse(json['dob']) : DateTime.now()
+      dob: TimeFormatter.safeParseDate(json['dob'] ?? '') ?? DateTime(1970),
     );
   }
 
   factory StudentDTO.fromStudent(Student student) {
     return StudentDTO(
-      id: student.studentId,
+      id: student.id,
       studentNumber: student.studentNumber,
       firstName: student.firstName,
       lastName: student.lastName,
@@ -53,11 +58,16 @@ class StudentDTO {
 
 
   Student toStudent() => Student(
-    studentId: id,
+      id: id,
     studentNumber: studentNumber,
     firstName: firstName,
     lastName: lastName,
     grade: grade,
     dob: dob
   );
+
+  @override
+  String toString() {
+    return 'StudentDTO(id: $id, studentNumber: $studentNumber, firstName: $firstName, lastName: $lastName, grade: $grade, dob: $dob)';
+  }
 }

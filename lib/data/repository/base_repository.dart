@@ -33,6 +33,20 @@ class BaseRepository {
     );
   }
 
+  Future<http.Response> postRaw(String url, String rawBody) async {
+    final token = await _storage.retrieveToken();
+    return _client.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: rawBody,
+    );
+  }
+
+
 
   Future<http.Response> patch(String url, Map<String, dynamic>? body) async {
     final token = await _storage.retrieveToken();

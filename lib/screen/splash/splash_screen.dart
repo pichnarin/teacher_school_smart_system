@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
           prev.errorMessage != curr.errorMessage,
       listener: (context, state) async {
         if (state.status == AuthStatus.unauthenticated) {
-          if (state.errorMessage?.contains('Session expired. Please log in again.') == true) {
+          if (state.errorMessage?.contains('ពេលវេលាសម័យបានផុតកំណត់។ សូមចូលគណនីម្ដងទៀត។') == true) {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -76,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
               CircularProgressIndicator(),
               SizedBox(height: 16),
               Text(
-                'Checking authentication...',
+                'កំពុងពិនិត្យការផ្ទៀងផ្ទាត់ភាពត្រឹមត្រូវ...',
                 style: TextStyle(fontSize: 16),
               ),
             ],

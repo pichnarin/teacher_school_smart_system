@@ -6,7 +6,7 @@ class StudentAttendanceCard extends StatelessWidget {
   final String fullName;
   final String studentId;
   final AttendanceStatus? selectedStatus;
-  final void Function(AttendanceStatus?) onStatusChanged; // ✅ allows null
+  final void Function(AttendanceStatus?) onStatusChanged;
   final bool isGrid;
   final Widget? leading;
   final Widget? trailing;

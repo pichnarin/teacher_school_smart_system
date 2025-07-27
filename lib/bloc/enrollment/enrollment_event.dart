@@ -17,7 +17,7 @@ class FetchEnrollmentsByClassId extends EnrollmentEvent {
   List<Object?> get props => [classId];
 }
 
-class MarkAttendance extends EnrollmentEvent{
+class MarkAttendance extends EnrollmentEvent {
   final ClassAttendanceDTO attendanceDTO;
   const MarkAttendance(this.attendanceDTO);
 
@@ -26,26 +26,24 @@ class MarkAttendance extends EnrollmentEvent{
 }
 
 class PatchStudentAttendanceRecord extends EnrollmentEvent {
-  final String attendanceId;
+  final String studentId; // Changed from attendanceId to studentId
   final String status;
 
   const PatchStudentAttendanceRecord({
-    required this.attendanceId,
+    required this.studentId,
     required this.status,
   });
 
   @override
-  List<Object?> get props => [attendanceId, status];
+  List<Object?> get props => [studentId, status];
 }
 
 class FetchAttendanceRecords extends EnrollmentEvent {
   final String classId;
-  final String date;
+  final String classSessionId;
 
-  const FetchAttendanceRecords({required this.classId, required this.date});
+  const FetchAttendanceRecords({required this.classId, required this.classSessionId});
 
   @override
-  List<Object?> get props => [classId, date];
+  List<Object?> get props => [classId, classSessionId];
 }
-
-

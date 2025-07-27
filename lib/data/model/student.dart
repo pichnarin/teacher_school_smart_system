@@ -1,5 +1,5 @@
 class Student {
-  final String studentId;
+  final String id;
   final String studentNumber;
   final String firstName;
   final String lastName;
@@ -7,7 +7,7 @@ class Student {
   final DateTime dob;
 
   const Student({
-    required this.studentId,
+    required this.id,
     required this.studentNumber,
     required this.firstName,
     required this.lastName,
@@ -16,9 +16,10 @@ class Student {
   });
 
   String get getFullName => '$firstName $lastName';
+  String get getId => id;
 
 
 
   @override
-  String toString() => 'Student(id: $studentId, name: $getFullName, no: $studentNumber)';
+  String toString() => 'Student(id: $id, name: $getFullName, no: $studentNumber)';
 }
