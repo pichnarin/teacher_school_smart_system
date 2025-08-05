@@ -5,7 +5,7 @@ import '../../../bloc/enrollment/enrollment_event.dart';
 import '../../../bloc/enrollment/enrollment_state.dart';
 import '../../../data/model/attendance_record.dart';
 import '../../../data/model/dto/class_attendance_dto.dart';
-import '../../global_widget/base_screen.dart';
+import '../global_widget/base_screen.dart';
 import 'widget/student_attendane_card.dart';
 
 class AttendanceScreen extends StatefulWidget {

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:pat_asl_portal/bloc/class/class_event.dart';
 import 'package:pat_asl_portal/data/model/class.dart';
 import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
-import 'package:pat_asl_portal/screen/home/evaluation_section/evaluation_screen.dart';
 import 'package:pat_asl_portal/screen/home/widget/news_card.dart';
 import 'package:pat_asl_portal/screen/home/widget/recent_activity_list.dart';
 import 'package:pat_asl_portal/screen/global_widget/section_header.dart';
@@ -16,6 +15,7 @@ import '../../bloc/class/class_state.dart';
 import '../../data/model/class_session.dart';
 import '../../util/checker/wifi_info.dart';
 import '../../util/helper_screen/state_screen.dart';
+import '../evaluation_section/evaluation_screen.dart';
 import '../navigator/navigator_controller.dart';
 
 class HomeScreen extends StatefulWidget {

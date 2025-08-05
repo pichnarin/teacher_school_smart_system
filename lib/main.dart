@@ -53,26 +53,31 @@ void main() async {
 
   // try{
   //   final baseRepository = BaseRepository(http.Client(), secureLocalStorage);
-  //   final repo = ClassRepository(baseRepository: baseRepository);
-  //   final service = ClassService(repository: repo);
-  //   final bloc = ClassBloc(classService: service);
+  //   final repo = EnrollmentRepository(baseRepository: baseRepository);
+  //   final service = EnrollmentService(repository: repo);
+  //   // final bloc = ClassBloc(classService: service);
   //
   //   final String classId = "99943cf4-8567-47a2-ba8e-5f48a663c3e3";
-  //   final String month = "1";
-  //   final String year = "2025";
   //
-  //   final subscription = bloc.stream.listen((state) {
-  //     debugPrint('Bloc State: $state');
-  //     debugPrint('Student Report: ${state.studentReports}');
-  //   });
+  //   final get = await service.getEnrollmentsByClassId(classId);
   //
-  //   await Future.delayed(const Duration(seconds: 2));
+  //   debugPrint('Enrollment Count: ${get.toString()}');
   //
-  //   bloc.add(FetchStudentReport(
-  //     classId: classId,
-  //     reportMonth: month,
-  //     reportYear: year,
-  //   ));
+  //   // final String month = "1";
+  //   // final String year = "2025";
+  //
+  //   // final subscription = bloc.stream.listen((state) {
+  //   //   debugPrint('Bloc State: $state');
+  //   //   debugPrint('Student Report: ${state.studentReports}');
+  //   // });
+  //   //
+  //   // await Future.delayed(const Duration(seconds: 2));
+  //   //
+  //   // bloc.add(FetchStudentReport(
+  //   //   classId: classId,
+  //   //   reportMonth: month,
+  //   //   reportYear: year,
+  //   // ));
   //
   //
   // }catch(error){

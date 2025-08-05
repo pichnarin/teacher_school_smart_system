@@ -17,6 +17,7 @@ class StudentReport {
   final AttendanceReport attendanceReport;
   final List<Score> studentScores;
   final List<DailyEvaluation> dailyEvaluations;
+  final ReportSummary reportSummary;
 
   const StudentReport({
     required this.classId,
@@ -31,6 +32,7 @@ class StudentReport {
     required this.attendanceReport,
     required this.studentScores,
     required this.dailyEvaluations,
+    required this.reportSummary,
   });
 
   @override
@@ -48,6 +50,7 @@ class StudentReport {
         'attendanceReport: $attendanceReport, '
         'studentScores: $studentScores, '
         'dailyEvaluations: $dailyEvaluations'
+        ', reportSummary: $reportSummary'
         '}';
   }
 }
@@ -65,6 +68,7 @@ class StudentReportDTO {
   final AttendanceReport attendanceReport;
   final List<Score> studentScores;
   final List<DailyEvaluationDTO> dailyEvaluationDTO;
+  final ReportSummary reportSummary;
 
   const StudentReportDTO({
     required this.classId,
@@ -79,41 +83,43 @@ class StudentReportDTO {
     required this.attendanceReport,
     required this.studentScores,
     required this.dailyEvaluationDTO,
+    required this.reportSummary,
   });
 
   factory StudentReportDTO.fromJson(Map<String, dynamic> json) {
-
     final attendanceJson = json['attendance'];
     final attendanceReport =
-    attendanceJson is Map<String, dynamic>
-        ? AttendanceReport.fromJson(attendanceJson)
-        : AttendanceReport.empty();
+        attendanceJson is Map<String, dynamic>
+            ? AttendanceReport.fromJson(attendanceJson)
+            : AttendanceReport.empty();
 
-    final exams = (json['exams'] as List?)
-        ?.whereType<Map<String, dynamic>>()
-        .toList() ?? [];
+    final exams =
+        (json['exams'] as List?)?.whereType<Map<String, dynamic>>().toList() ??
+        [];
 
-    final evaluations = (json['evaluations'] as List?)
-        ?.whereType<Map<String, dynamic>>()
-        .toList() ?? [];
+    final evaluations =
+        (json['evaluations'] as List?)
+            ?.whereType<Map<String, dynamic>>()
+            .toList() ??
+        [];
 
-      return StudentReportDTO(
-        classId: json['class_id'] ?? '',
-        studentId: json['student_id'] ?? '',
-        studentName: json['student_name'] ?? '',
-        studentNumber: json['student_number'] ?? '',
-        subjectName: json['subject'] ?? '',
-        subjectLevel: json['subject_level'] ?? '',
-        roomName: json['room_name'] ?? '',
-        reportMonth: json['month']?.toString() ?? '',
-        reportYear: json['year']?.toString() ?? '',
-        attendanceReport: attendanceReport,
-        studentScores: exams.map((e) => Score.fromJson(e)).toList(),
-        dailyEvaluationDTO:
-        evaluations.map((e) => DailyEvaluationDTO.fromJson(e)).toList(),
-      );
+    return StudentReportDTO(
+      classId: json['class_id'] ?? '',
+      studentId: json['student_id'] ?? '',
+      studentName: json['student_name'] ?? '',
+      studentNumber: json['student_number'] ?? '',
+      subjectName: json['subject'] ?? '',
+      subjectLevel: json['subject_level'] ?? '',
+      roomName: json['room_name'] ?? '',
+      reportMonth: json['month']?.toString() ?? '',
+      reportYear: json['year']?.toString() ?? '',
+      attendanceReport: attendanceReport,
+      studentScores: exams.map((e) => Score.fromJson(e)).toList(),
+      dailyEvaluationDTO:
+          evaluations.map((e) => DailyEvaluationDTO.fromJson(e)).toList(),
+      reportSummary: ReportSummary.fromJson(json['report'] ?? {}),
+    );
   }
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -148,6 +154,7 @@ class StudentReportDTO {
       studentScores: studentScores,
       dailyEvaluations:
           dailyEvaluationDTO.map((e) => e.toDailyEvaluation()).toList(),
+      reportSummary: reportSummary,
     );
   }
 
@@ -164,10 +171,8 @@ class StudentReportDTO {
       reportYear: report.reportYear,
       attendanceReport: report.attendanceReport,
       studentScores: report.studentScores,
-      dailyEvaluationDTO:
-          report.dailyEvaluations
-              .map((e) => DailyEvaluationDTO.fromDailyEvaluation(e))
-              .toList(),
+      dailyEvaluationDTO: report.dailyEvaluations.map((e) => DailyEvaluationDTO.fromDailyEvaluation(e)).toList(),
+      reportSummary: report.reportSummary,
     );
   }
 
@@ -186,6 +191,7 @@ class StudentReportDTO {
         'attendanceReport: $attendanceReport, '
         'studentScores: $studentScores, '
         'dailyEvaluationDTO: $dailyEvaluationDTO'
+        ', reportSummary: $reportSummary'
         '}';
   }
 }
@@ -222,6 +228,67 @@ class AttendanceReport {
       'late': late,
       'absent': absent,
       'excused': excused,
+    };
+  }
+}
+
+class ReportSummary {
+  final String id;
+  final int reportMonth;
+  final int reportYear;
+  final double attendancePenalty;
+  final double dailyEvaluationPenalty;
+  final double totalPenalty;
+  final double overallScore;
+  final double maxScore;
+
+  const ReportSummary({
+    required this.id,
+    required this.reportMonth,
+    required this.reportYear,
+    required this.attendancePenalty,
+    required this.dailyEvaluationPenalty,
+    required this.totalPenalty,
+    required this.overallScore,
+    required this.maxScore,
+  });
+
+  String get reportPeriod => '$reportMonth/$reportYear';
+  double get percentage => (overallScore / maxScore) * 100;
+
+  String get grade {
+    final percentage = this.percentage;
+    if (percentage >= 90) return 'A';
+    if (percentage >= 80) return 'B';
+    if (percentage >= 70) return 'C';
+    if (percentage >= 60) return 'D';
+    return 'F';
+  }
+
+  factory ReportSummary.fromJson(Map<String, dynamic> json) {
+    return ReportSummary(
+      id: json['id'] ?? '',
+      reportMonth: json['month'] ?? '',
+      reportYear: json['year'] ?? '',
+      attendancePenalty: (json['attendance_penalty'] ?? 0).toDouble(),
+      dailyEvaluationPenalty:
+      (json['daily_evaluation_penalty'] ?? 0).toDouble(),
+      totalPenalty: (json['total_penalty'] ?? 0).toDouble(),
+      overallScore: (json['overall_score'] ?? 0).toDouble(),
+      maxScore: (json['max_score'] ?? 0).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'month': reportMonth,
+      'year': reportYear,
+      'attendance_penalty': attendancePenalty,
+      'daily_evaluation_penalty': dailyEvaluationPenalty,
+      'total_penalty': totalPenalty,
+      'overall_score': overallScore,
+      'max_score': maxScore,
     };
   }
 }

@@ -37,8 +37,8 @@ class FetchClassById extends ClassEvent {
 
 class FetchStudentReport extends ClassEvent {
   final String classId;
-  final String reportMonth;
-  final String reportYear;
+  final int reportMonth;
+  final int reportYear;
 
   const FetchStudentReport({
     required this.classId,

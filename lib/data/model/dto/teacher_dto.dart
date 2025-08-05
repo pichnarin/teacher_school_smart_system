@@ -21,10 +21,7 @@ class TeacherDTO {
         no: json['no'] ?? '',
         user: UserProfileDTO.fromJson(json['user'] ?? {}).toUserProfile(),
       );
-    }catch (e, stack) {
-      print('❌ Failed to parse TeacherDTO: $e');
-      print('🔍 Stack trace:\n$stack');
-      print('🧪 Data:\n$json');
+    }catch (e) {
       rethrow;
     }
   }

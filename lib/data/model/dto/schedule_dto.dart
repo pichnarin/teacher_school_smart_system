@@ -42,10 +42,7 @@ class ScheduleDTO {
         subjectDTO: SubjectDTO.fromJson(json['subject'] ?? {}),
         sessionDTO: SessionDTO.fromJson(json['sessionType'] ?? {}),
       );
-    } catch (e, stack) {
-      print('❌ Failed to parse ScheduleDTO: $e');
-      print('🔍 Stack trace:\n$stack');
-      print('🧪 Data:\n$json');
+    } catch (e) {
       rethrow;
     }
   }

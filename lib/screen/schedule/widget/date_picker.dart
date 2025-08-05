@@ -540,7 +540,6 @@ void main() {
             controller: controller,
             onDateSelected: (date) {
               final formattedDate = DateFormat('yyyy-MM-dd').format(date);
-              print('Selected date: $formattedDate');
             },
           ),
         ),

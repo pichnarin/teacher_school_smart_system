@@ -46,7 +46,7 @@ class ClassService {
     return sessionDTOs.map((dto) => dto.toClass()).toList();
   }
 
-  Future<List<StudentReport>> fetchStudentReport(String classId, String month, String year) async{
+  Future<List<StudentReport>> fetchStudentReport(String classId, int month, int year) async{
     final sessionDTOs = await _repository.fetchStudentReport(classId, month, year);
     return sessionDTOs.map((dto) => dto.toStudentReport()).toList();
   }

@@ -53,6 +53,7 @@ class _DailyEvaluationCreateOrPatchScreenState
     'none',
   ];
   final Map<String, Map<String, dynamic>> studentInputs = {};
+  final Set<String> changedStudentIds = {};
 
   @override
   void initState() {
@@ -173,7 +174,8 @@ class _DailyEvaluationCreateOrPatchScreenState
               itemCount: students.length,
               itemBuilder: (context, index) {
                 dynamic entry = students[index];
-                final student = entry is EnrollmentWithStudent ? entry.student : entry;
+                final student =
+                    entry is EnrollmentWithStudent ? entry.student : entry;
 
                 return Card(
                   elevation: 3,
@@ -219,6 +221,7 @@ class _DailyEvaluationCreateOrPatchScreenState
                             setState(() {
                               studentInputs[student.id]!['class_activity'] =
                                   value.toInt();
+                              changedStudentIds.add(student.id);
                             });
                           },
                         ),
@@ -243,16 +246,26 @@ class _DailyEvaluationCreateOrPatchScreenState
             onPressed: () {
               if (widget.isPatching) {
                 final patchPayload =
-                    studentInputs.entries.map((entry) {
-                      final data = entry.value;
-                      return DailyEvaluationPatch(
-                        id: data['id'],
-                        homework: data['homework'],
-                        clothing: data['clothing'],
-                        attitude: data['attitude'],
-                        classActivity: data['class_activity'],
-                      ).toJson();
-                    }).toList();
+                    studentInputs.entries
+                        .where((entry) => changedStudentIds.contains(entry.key))
+                        .map((entry) {
+                          final data = entry.value;
+                          return DailyEvaluationPatch(
+                            id: data['id'],
+                            homework: data['homework'],
+                            clothing: data['clothing'],
+                            attitude: data['attitude'],
+                            classActivity: data['class_activity'],
+                          ).toJson();
+                        })
+                        .toList();
+
+                if (patchPayload.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("No changes to save.")),
+                  );
+                  return;
+                }
 
                 context.read<DailyEvaluationBloc>().add(
                   PatchDailyEvaluations(patchPayload),
@@ -288,6 +301,7 @@ class _DailyEvaluationCreateOrPatchScreenState
         onChanged: (value) {
           setState(() {
             studentInputs[studentId]?[field] = value!;
+            changedStudentIds.add(studentId);
           });
         },
         decoration: InputDecoration(

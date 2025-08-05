@@ -16,7 +16,7 @@ class BaseScreen extends StatelessWidget {
         logoPath: 'assets/design_properties/ang_soeng_logo.jpg',
         onNotificationPressed: () {
           // Handle notification click
-          print('Notification clicked');
+
         },
       ),
       body: body,

@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:pat_asl_portal/bloc/exam_record/exam_record_event.dart';
 import 'package:pat_asl_portal/data/model/dto/score_dto.dart';
 import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
-import 'package:pat_asl_portal/screen/home/evaluation_section/create_or_patching_exam_score_screen.dart';
 import 'package:pat_asl_portal/util/helper_screen/state_screen.dart';
 import '../../../bloc/exam_record/exam_record_bloc.dart';
 import '../../../bloc/exam_record/exam_record_state.dart';
-import '../../navigator/navigator_controller.dart';
+import '../navigator/navigator_controller.dart';
+import '../report/student_report_screen.dart';
+import 'create_or_patching_exam_score_screen.dart';
 
 class ExamScoreScreen extends StatefulWidget {
   final String classId;
@@ -117,7 +118,10 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [colorScheme.primary, colorScheme.primaryContainer],
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.primaryContainer,
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -135,7 +139,11 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.score, color: colorScheme.onPrimary, size: 28),
+                          Icon(
+                            Icons.score,
+                            color: colorScheme.onPrimary,
+                            size: 28,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -178,13 +186,13 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                             return FilledButton.tonal(
                               style: FilledButton.styleFrom(
                                 backgroundColor:
-                                isSelected
-                                    ? colorScheme.primary
-                                    : colorScheme.surfaceContainerHighest,
+                                    isSelected
+                                        ? colorScheme.primary
+                                        : colorScheme.surfaceContainerHighest,
                                 foregroundColor:
-                                isSelected
-                                    ? colorScheme.onPrimary
-                                    : colorScheme.onSurfaceVariant,
+                                    isSelected
+                                        ? colorScheme.onPrimary
+                                        : colorScheme.onSurfaceVariant,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
@@ -197,7 +205,9 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                               },
                               child: Text(
                                 months[index],
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             );
                           },
@@ -211,14 +221,14 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                       dropdownColor: colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
                       items:
-                      years
-                          .map(
-                            (y) => DropdownMenuItem(
-                          value: y,
-                          child: Text(y.toString()),
-                        ),
-                      )
-                          .toList(),
+                          years
+                              .map(
+                                (y) => DropdownMenuItem(
+                                  value: y,
+                                  child: Text(y.toString()),
+                                ),
+                              )
+                              .toList(),
                       onChanged: (y) {
                         if (y != null) {
                           setState(() {
@@ -299,7 +309,9 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                         padding: const EdgeInsets.all(40),
                         child: Column(
                           children: [
-                            CircularProgressIndicator(color: colorScheme.primary),
+                            CircularProgressIndicator(
+                              color: colorScheme.primary,
+                            ),
                             const SizedBox(height: 16),
                             Text(
                               'Loading scores...',
@@ -312,7 +324,10 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                         ),
                       );
                     } else if (state.status == ExamRecordStatus.error) {
-                      return ErrorState(errorMessage: 'It seems there are no scores entered for ${months[examMonth - 1]} $examYear.');
+                      return ErrorState(
+                        errorMessage:
+                            'It seems there are no scores entered for ${months[examMonth - 1]} $examYear.',
+                      );
                     } else if (state.status == ExamRecordStatus.loaded) {
                       final scores = state.scores;
                       if (scores.isEmpty) {
@@ -346,7 +361,7 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                               ),
                               const SizedBox(height: 16),
                               FilledButton.icon(
-                                onPressed: (){
+                                onPressed: () {
                                   navigatorController.pushToCurrentTab(
                                     CreateOrPatchingExamScoreScreen(
                                       classId: widget.classId,
@@ -369,8 +384,11 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                       }
                       // Stats summary
                       final avgScore =
-                          scores.fold<double>(0, (a, b) => a + b.score.getScore) /
-                              scores.length;
+                          scores.fold<double>(
+                            0,
+                            (a, b) => a + b.score.getScore,
+                          ) /
+                          scores.length;
                       itemBuilder(BuildContext context, int index) {
                         final score = scores[index];
                         final grade = getGrade(score.score.maxScore);
@@ -382,7 +400,10 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -399,11 +420,15 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         score.student.getFullName,
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -421,8 +446,8 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                             ),
                           ),
                         );
-
                       }
+
                       return Column(
                         children: [
                           Container(
@@ -460,24 +485,24 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
                           ),
                           isGrid
                               ? GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 2.5,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                            ),
-                            itemCount: scores.length,
-                            itemBuilder: itemBuilder,
-                          )
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 2.5,
+                                      crossAxisSpacing: 12,
+                                      mainAxisSpacing: 12,
+                                    ),
+                                itemCount: scores.length,
+                                itemBuilder: itemBuilder,
+                              )
                               : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: scores.length,
-                            itemBuilder: itemBuilder,
-                          ),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: scores.length,
+                                itemBuilder: itemBuilder,
+                              ),
                         ],
                       );
                     }
@@ -490,42 +515,80 @@ class _ExamScoreScreenState extends State<ExamScoreScreen> {
 
           BlocBuilder<ExamRecordBloc, ExamRecordState>(
             builder: (context, state) {
-              if (state.status == ExamRecordStatus.loaded && state.scores.isNotEmpty) {
+              if (state.status == ExamRecordStatus.loaded &&
+                  state.scores.isNotEmpty) {
                 return Positioned(
                   bottom: 24,
                   right: 24,
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    icon: const Icon(Icons.edit),
-                    label: const Text('Patch Scores'),
-                    onPressed: () {
-                      navigatorController.pushToCurrentTab(
-                        CreateOrPatchingExamScoreScreen(
-                          classId: widget.classId,
-                          subjectId: widget.subjectId,
-                          subjectName: widget.subjectName,
-                          subjectLevelId: widget.subjectLevelId,
-                          subjectLevelName: widget.subjectLevelName,
-                          examMonth: examMonth,
-                          examYear: examYear,
-                          isPatching: true,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor:
+                              Colors.orange, // or Theme.of(context).colorScheme.secondary
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
-                      );
-                    },
+                        icon: const Icon(Icons.insert_drive_file),
+                        label: const Text('Generate Report'),
+                        onPressed: () {
+                          navigatorController.pushToCurrentTab(
+                            StudentReportScreen(
+                              classId: widget.classId,
+                              reportMonth: examMonth,
+                              reportYear: examYear,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12), // spacing between buttons
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Patch Scores'),
+                        onPressed: () {
+                          navigatorController.pushToCurrentTab(
+                            CreateOrPatchingExamScoreScreen(
+                              classId: widget.classId,
+                              subjectId: widget.subjectId,
+                              subjectName: widget.subjectName,
+                              subjectLevelId: widget.subjectLevelId,
+                              subjectLevelName: widget.subjectLevelName,
+                              examMonth: examMonth,
+                              examYear: examYear,
+                              isPatching: true,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 );
               }
               return const SizedBox.shrink();
             },
           ),
-        ]
+        ],
       ),
     );
   }

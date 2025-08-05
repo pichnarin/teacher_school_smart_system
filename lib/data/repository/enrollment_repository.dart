@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pat_asl_portal/data/model/dto/class_attendance_dto.dart';
 
 import '../../util/exception/api_exception.dart';
@@ -71,7 +72,9 @@ class EnrollmentRepository {
             ),
           );
         } catch (e) {
-          print('Error parsing enrollment item: $e');
+          if (kDebugMode) {
+            print('Error parsing enrollment item: $e');
+          }
           // Continue to next item instead of failing entire request
         }
       }

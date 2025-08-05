@@ -15,10 +15,7 @@ class SubjectDTO {
         subjectId: json['id'] ?? '',
         subjectName: json['subject_name'] ?? '',
       );
-    }catch (e, stack) {
-      print('❌ Failed to parse SubjectDTO: $e');
-      print('🔍 Stack trace:\n$stack');
-      print('🧪 Data:\n$json');
+    }catch (e) {
       rethrow;
     }
   }

@@ -12,9 +12,9 @@ import '../../bloc/class_session/class_session_bloc.dart';
 import '../../bloc/class_session/class_session_state.dart';
 import '../../data/model/class.dart';
 import '../../util/formatter/time_of_the_day_formater.dart';
+import '../enroll_student_attendance/class_detail_screen.dart';
 import '../home/widget/suggest_class_card.dart';
 import '../navigator/navigator_controller.dart';
-import 'enroll_student_attendance/class_detail_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -243,7 +243,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '$currentDate',
+                              currentDate,
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 14,

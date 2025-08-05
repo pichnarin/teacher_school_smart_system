@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
-import 'package:pat_asl_portal/screen/home/evaluation_section/dump/daily_monthly_score_screen.dart';
-import 'package:pat_asl_portal/screen/home/evaluation_section/exam_score_screen.dart';
+import 'package:pat_asl_portal/screen/report/student_report_screen.dart';
 import 'package:pat_asl_portal/util/formatter/time_of_the_day_formater.dart';
 import '../../../bloc/class/class_bloc.dart';
 import '../../../bloc/class/class_event.dart';
@@ -11,8 +10,9 @@ import '../../../bloc/class/class_state.dart';
 import '../../../data/model/class.dart';
 import '../../../data/model/dto/score_dto.dart';
 import '../../../util/helper_screen/state_screen.dart';
-import '../../navigator/navigator_controller.dart';
-import '../widget/suggest_class_card.dart';
+import '../home/widget/suggest_class_card.dart';
+import '../navigator/navigator_controller.dart';
+import 'exam_score_screen.dart';
 
 enum KhmerMonth {
   january("មករា"),
@@ -32,13 +32,11 @@ enum KhmerMonth {
   const KhmerMonth(this.khmer);
 }
 
-
 class EvaluationScreen extends StatefulWidget {
   const EvaluationScreen({super.key});
 
   @override
-  State<EvaluationScreen> createState() =>
-      _EvaluationScreenState();
+  State<EvaluationScreen> createState() => _EvaluationScreenState();
 }
 
 class _EvaluationScreenState extends State<EvaluationScreen> {
@@ -50,19 +48,19 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
 
   final navigatorController = Get.find<NavigatorController>();
 
-  final List<int> _months = List.generate(12, (i) => i + 1);
-  final List<int> _years = List.generate(6, (i) => DateTime.now().year - 2 + i);
-
-  String _getMonthName(int month) {
-    if (month < 1 || month > 12) throw ArgumentError("Invalid month number: $month");
-    return KhmerMonth.values[month - 1].khmer;
-  }
-
+  // final List<int> _months = List.generate(12, (i) => i + 1);
+  // final List<int> _years = List.generate(6, (i) => DateTime.now().year - 2 + i);
+  //
+  // String _getMonthName(int month) {
+  //   if (month < 1 || month > 12)
+  //     throw ArgumentError("Invalid month number: $month");
+  //   return KhmerMonth.values[month - 1].khmer;
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme;
+    // final theme = Theme.of(context);
+    // final color = theme.colorScheme;
 
     return BaseScreen(
       body: RefreshIndicator(
@@ -75,7 +73,6 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
               padding: const EdgeInsets.all(20),
               child: ListView(
                 children: [
-
                   SizedBox(
                     height: 220,
 
@@ -86,7 +83,9 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
                             return const LoadingState();
 
                           case ClassStatus.error:
-                            return ErrorState(errorMessage: state.errorMessage.toString());
+                            return ErrorState(
+                              errorMessage: state.errorMessage.toString(),
+                            );
 
                           case ClassStatus.loaded:
                             final classes = state.classes;
@@ -101,7 +100,6 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
                       },
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -123,15 +121,16 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
           classGrade: session.subjectLevel.name ?? 'N/A',
           classSubject: session.subject.subjectName,
           totalStudents: (session.studentCount ?? 0).toString(),
-          onTap: (){
+          onTap: () {
             navigatorController.pushToCurrentTab(
-                ExamScoreScreen(
-                    classId: session.classId,
-                    subjectId: session.subject.subjectId,
-                    subjectName: session.subject.subjectName,
-                    subjectLevelId: session.subjectLevel.getId,
-                    subjectLevelName: session.subjectLevel.name ?? 'N/A',
-                )
+              ExamScoreScreen(
+                classId: session.classId,
+                subjectId: session.subject.subjectId,
+                subjectName: session.subject.subjectName,
+                subjectLevelId: session.subjectLevel.getId,
+                subjectLevelName: session.subjectLevel.name ?? 'N/A',
+              )
+
             );
           },
         );

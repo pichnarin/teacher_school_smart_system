@@ -1,9 +1,6 @@
-import 'package:pat_asl_portal/data/model/schedule.dart';
 import 'package:pat_asl_portal/data/model/subject.dart';
 import 'package:pat_asl_portal/data/model/subject_level.dart';
 import 'package:pat_asl_portal/data/model/teacher.dart';
-import 'package:pat_asl_portal/data/model/room.dart';
-import 'package:pat_asl_portal/data/model/class_session.dart';
 
 class Class {
   final String classId;

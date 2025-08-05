@@ -1,25 +1,9 @@
-// class Environment {
-//   static const String endpointBase = "http://localhost:3000/";
-//   static const String endpointApi = "http://localhost:3000/api";
-//
-//   // Auth endpoints
-//   static String get loginEndpoint => "$endpointApi/v1/user/login";
-//   static String get verifyOtpEndpoint => "$endpointApi/v1/user/verify";
-//   static String get refreshTokenEndpoint => "$endpointApi/v1/user/refresh-token";
-//   static String get logoutEndpoint => "$endpointApi/v1/user/auth/logout";
-// }
-
-// http://localhost:3000/api/v1/user/login
-// http://localhost:3000/api/v1/user/verify
-// http://localhost:3000/api/v1/user/refresh-token
-// http://localhost:3000/api/v1/user/auth/logout
-
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EndpointCollection {
-  static const String _devServerIp = "192.168.11.154";
-  static const String _socketServerUrl = "http://192.168.11.154:3000";
+  static const String _devServerIp = "192.168.1.8";
+  static const String _socketServerUrl = "http://192.168.1.8:3000";
 
   static String get endpointBase {
     if (kIsWeb) {
@@ -92,7 +76,9 @@ class EndpointCollection {
   static String Function(String classId, String subjectId, String examMonth, String examYear) get isExamScoresExisted => (String classId, String subjectId, String examMonth, String examYear) {return '$endpointApi/v1/user/auth/teacher/classes/$classId/exam-scores?subject_id=$subjectId&exam_month=$examMonth&exam_year=$examYear';};
 
   //student report including exam scores, daily evaluation and attendance base on class and month and year
-  static String Function(String classId, String month, String year) get studentReportEndpoint => (String classId, String month, String year) => '$endpointApi/v1/user/auth/teacher/classes/student-report?classId=$classId&month=$month&year=$year';
+  static String Function(String classId, int month, int year) get studentReportEndpoint => (String classId, int month, int year) => '$endpointApi/v1/user/auth/teacher/classes/student-report?classId=$classId&month=$month&year=$year';
+  static String get generateReportEndpoint => '$endpointApi/v1/user/auth/teacher/classes/generate-student-report';
+
 }
 
 

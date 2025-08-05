@@ -5,9 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:pat_asl_portal/bloc/enrollment/enrollment_event.dart';
 import 'package:pat_asl_portal/data/model/class_session.dart';
 import 'package:pat_asl_portal/screen/global_widget/section_header.dart';
-import 'package:pat_asl_portal/screen/schedule/daily_evaluation/daily_evaluation_create_or_patch_screen.dart';
-import 'package:pat_asl_portal/screen/schedule/daily_evaluation/daily_evaluation_screen.dart';
-import 'package:pat_asl_portal/screen/schedule/enroll_student_attendance/attendance_screen.dart';
 import '../../../bloc/class_session/class_session_bloc.dart';
 import '../../../bloc/class_session/class_session_event.dart';
 import '../../../bloc/class_session/class_session_state.dart';
@@ -20,9 +17,11 @@ import '../../../bloc/get_active_class_session/session_event.dart';
 import '../../../bloc/get_active_class_session/session_state.dart';
 import '../../../util/formatter/time_of_the_day_formater.dart';
 import '../../../util/helper_screen/state_screen.dart';
-import '../../global_widget/base_screen.dart';
-import '../../home/widget/suggest_class_card.dart';
-import '../../navigator/navigator_controller.dart';
+import '../daily_evaluation/daily_evaluation_create_or_patch_screen.dart';
+import '../global_widget/base_screen.dart';
+import '../home/widget/suggest_class_card.dart';
+import '../navigator/navigator_controller.dart';
+import 'attendance_screen.dart';
 
 class ClassDetailScreen extends StatefulWidget {
   final String classId;

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pat_asl_portal/data/model/dto/daily_evaluation_dto.dart';
 import 'package:pat_asl_portal/data/repository/base_repository.dart';
 import '../endpoint_collection.dart';
@@ -58,7 +59,9 @@ class DailyEvaluationRepository {
     final response = await _baseRepository.postRaw(url, jsonArray);
 
     if (response.statusCode != 201 && response.statusCode != 200) {
-      print("❌ Server error: ${response.body}");
+      if (kDebugMode) {
+        print("❌ Server error: ${response.body}");
+      }
       throw Exception('Failed to create daily evaluations');
     }
   }

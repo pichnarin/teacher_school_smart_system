@@ -178,8 +178,8 @@ class ClassRepository {
 
   Future<List<StudentReportDTO>> fetchStudentReport(
       String classId,
-      String month,
-      String year,
+      int month,
+      int year,
       ) async {
     try {
       final url = EndpointCollection.studentReportEndpoint(

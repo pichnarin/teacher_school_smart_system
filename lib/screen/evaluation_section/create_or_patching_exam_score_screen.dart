@@ -9,7 +9,8 @@ import 'package:pat_asl_portal/bloc/exam_record/exam_record_event.dart';
 import 'package:pat_asl_portal/bloc/exam_record/exam_record_state.dart';
 import 'package:pat_asl_portal/data/model/dto/score_dto.dart';
 import 'package:pat_asl_portal/data/model/score_with_student.dart';
-import '../../navigator/navigator_controller.dart';
+
+import '../navigator/navigator_controller.dart';
 
 class CreateOrPatchingExamScoreScreen extends StatefulWidget {
   final String classId;

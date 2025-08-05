@@ -183,7 +183,7 @@ class EnrollmentBloc extends Bloc<EnrollmentEvent, EnrollmentState> {
       for (var record in records) {
         if (record.id != null) {
           recordsMap[record.studentId] = record.status;
-          recordIdsMap[record.studentId] = record.id!;
+          recordIdsMap[record.studentId] = record.id;
         }
       }
 

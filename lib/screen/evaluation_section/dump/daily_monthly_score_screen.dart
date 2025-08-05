@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pat_asl_portal/screen/global_widget/base_screen.dart';
-import '../../../navigator/navigator_controller.dart';
+
+import '../../navigator/navigator_controller.dart';
 
 class DailyMonthlyScoreScreen extends StatefulWidget {
   final String classId;
