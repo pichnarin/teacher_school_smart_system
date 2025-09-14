@@ -111,8 +111,8 @@ class StudentReportDTO {
       subjectName: json['subject'] ?? '',
       subjectLevel: json['subject_level'] ?? '',
       roomName: json['room_name'] ?? '',
-      reportMonth: json['month']?.toString() ?? '',
-      reportYear: json['year']?.toString() ?? '',
+      reportMonth: json['month'] ?? '',
+      reportYear: json['year'] ?? '',
       attendanceReport: attendanceReport,
       studentScores: exams.map((e) => Score.fromJson(e)).toList(),
       dailyEvaluationDTO:
@@ -266,18 +266,24 @@ class ReportSummary {
   }
 
   factory ReportSummary.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic value) {
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
     return ReportSummary(
       id: json['id'] ?? '',
-      reportMonth: json['month'] ?? '',
-      reportYear: json['year'] ?? '',
+      reportMonth: parseInt(json['month']),
+      reportYear: parseInt(json['year']),
       attendancePenalty: (json['attendance_penalty'] ?? 0).toDouble(),
-      dailyEvaluationPenalty:
-      (json['daily_evaluation_penalty'] ?? 0).toDouble(),
+      dailyEvaluationPenalty: (json['daily_evaluation_penalty'] ?? 0).toDouble(),
       totalPenalty: (json['total_penalty'] ?? 0).toDouble(),
       overallScore: (json['overall_score'] ?? 0).toDouble(),
       maxScore: (json['max_score'] ?? 0).toDouble(),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

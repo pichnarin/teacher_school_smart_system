@@ -1,7 +1,6 @@
 enum SessionType {
-  lab('Lab Session'),
-  lecture('Lecture Session'),
-  exam('Exam Session');
+  normal('វគ្គបង្រៀន'),
+  exam('វគ្គប្រឡង');
 
   final String name;
   const SessionType(this.name);
@@ -11,7 +10,7 @@ enum SessionType {
   static SessionType fromString(String type) {
     return SessionType.values.firstWhere(
           (e) => e.name == type.toLowerCase(),
-      orElse: () => SessionType.lecture,
+      orElse: () => SessionType.normal,
     );
   }
 }
