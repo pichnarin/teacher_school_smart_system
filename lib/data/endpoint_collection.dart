@@ -2,8 +2,8 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EndpointCollection {
-  static const String _devServerIp = "192.168.1.8";
-  static const String _socketServerUrl = "http://192.168.1.8:3000";
+  static const String _devServerIp = "192.168.251.237";
+  static const String _socketServerUrl = "http://192.168.251.237:3000";
 
   static String get endpointBase {
     if (kIsWeb) {
@@ -51,7 +51,7 @@ class EndpointCollection {
 
 
   //enrollment endpoint
-  static String get enrollmentEndpoint => '$endpointApi/v1/user/auth/teacher/enrollment';
+  static String get enrollmentEndpoint => '$endpointApi/v1/user/auth/enrollment';
   static String Function(String classId) get studentListEndpoint => (String classId) => '$enrollmentEndpoint/student_list/by-class_id?class_id=$classId';
   static String get markAttendanceEndpoint => '$enrollmentEndpoint/attendance';
   static String Function(String attendanceId) get patchAttendanceEndpoint => (String attendanceId) => '$enrollmentEndpoint/attendance/$attendanceId';
@@ -77,7 +77,7 @@ class EndpointCollection {
 
   //student report including exam scores, daily evaluation and attendance base on class and month and year
   static String Function(String classId, int month, int year) get studentReportEndpoint => (String classId, int month, int year) => '$endpointApi/v1/user/auth/teacher/classes/student-report?classId=$classId&month=$month&year=$year';
-  static String get generateReportEndpoint => '$endpointApi/v1/user/auth/teacher/classes/generate-student-report';
+  static String get generateReportEndpoint => '$endpointApi/v1/admin/auth/student/report/generate';
 
 }
 

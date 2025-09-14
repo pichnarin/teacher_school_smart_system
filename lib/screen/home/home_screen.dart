@@ -71,8 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: WelcumBanner(
                   greeting: Greeting.morning,
-                  teacherName: 'Mr. Narin Pich',
-                  amountOfTasks: '2',
+                  teacherName: 'លោកគ្រូ ណារិន ពេជ្រ',
+                  amountOfTasks: '1',
                 ),
               ),
 
@@ -279,14 +279,17 @@ class _HomeScreenState extends State<HomeScreen> {
       separatorBuilder: (_, __) => const SizedBox(width: 12),
       itemBuilder: (_, index) {
         final session = classes[index];
-
-        return SuggestedClassCard(
-          classGrade: session.subjectLevel.name.toUpperCase(),
-          classSubject: session.subject.subjectName.toUpperCase(),
-          totalStudents: (session.studentCount ?? 0).toString(),
+        return SizedBox(
+          width: 260, // fixed width for horizontal list visibility
+          child: SuggestedClassCard(
+            classGrade: session.subjectLevel.name.toUpperCase(),
+            classSubject: session.subject.subjectName.toUpperCase(),
+            totalStudents: (session.studentCount ?? 0).toString(),
+          ),
         );
       },
     );
   }
+
 
 }

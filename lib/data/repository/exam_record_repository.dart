@@ -78,6 +78,11 @@ class ExamRecordRepository {
       final response = await _baseRepository.post(url, body: dto.toJson());
       final responseData = _decodeResponse(response);
 
+      // debugPrint('From repository');
+      // debugPrint(classId);
+      // debugPrint(dto.toJson().toString());
+      // debugPrint(responseData.toString());
+
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw ApiException(
           _extractMessage(responseData) ?? 'Failed to set exam scores',

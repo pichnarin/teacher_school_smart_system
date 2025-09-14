@@ -9,7 +9,13 @@ import 'package:pat_asl_portal/bloc/exam_record/exam_record_event.dart';
 import 'package:pat_asl_portal/bloc/exam_record/exam_record_state.dart';
 import 'package:pat_asl_portal/data/model/dto/score_dto.dart';
 import 'package:pat_asl_portal/data/model/score_with_student.dart';
+import 'package:pat_asl_portal/screen/evaluation_section/widget/create_scores_form.dart';
+import 'package:pat_asl_portal/screen/evaluation_section/widget/empty_students_view.dart';
+import 'package:pat_asl_portal/screen/evaluation_section/widget/exam_score_app_bar.dart';
+import 'package:pat_asl_portal/screen/evaluation_section/widget/save_scores_button.dart';
+import 'package:pat_asl_portal/screen/evaluation_section/widget/update_scores_list.dart';
 
+import '../daily_evaluation/widget/loading_indicator.dart';
 import '../navigator/navigator_controller.dart';
 
 class CreateOrPatchingExamScoreScreen extends StatefulWidget {
@@ -65,7 +71,7 @@ class _CreateOrPatchingExamScoreScreenState
     final studentScores =
         students
             .map((enrollment) {
-              final studentId = enrollment.student.studentId;
+              final studentId = enrollment.student.id;
               final score = double.tryParse(_scoreInputs[studentId] ?? '') ?? 0;
               return StudentScoreInput(studentId: studentId, score: score);
             })
@@ -97,6 +103,10 @@ class _CreateOrPatchingExamScoreScreenState
     context.read<EnrollmentBloc>().add(
       FetchEnrollmentsByClassId(widget.classId),
     );
+    _fetchScores();
+  }
+
+  void _fetchScores() {
     context.read<ExamRecordBloc>().add(
       FetchExamScores(
         widget.classId,
@@ -119,300 +129,108 @@ class _CreateOrPatchingExamScoreScreenState
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return BlocListener<ExamRecordBloc, ExamRecordState>(
-        listener: (context, state) {
-      if (state.status == ExamRecordStatus.patched) {
-        // Refresh scores
-        context.read<ExamRecordBloc>().add(
-          FetchExamScores(
-            widget.classId,
-            filter: GetExamScoresFilterDto(
-              subjectId: widget.subjectId,
-              examMonth: widget.examMonth,
-              examYear: widget.examYear,
-            ),
-          ),
-        );
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('បន្ទុរពិនិត្យបានកែប្រែដោយជោគជ័យ!')),
-        );
-      } else if (state.status == ExamRecordStatus.set) {
-        // Refresh scores
-        context.read<ExamRecordBloc>().add(
-          FetchExamScores(
-            widget.classId,
-            filter: GetExamScoresFilterDto(
-              subjectId: widget.subjectId,
-              examMonth: widget.examMonth,
-              examYear: widget.examYear,
-            ),
-          ),
-        );
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('វាយពិនិត្យបានបង្កើតដោយជោគជ័យ!')),
-        );
-      }else if (state.status == ExamRecordStatus.error) {
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.errorMessage ?? 'បរាជ័យក្នុងការធ្វេីប្រតិបត្តិការ')),
-        );
-      }
+      listener: (context, state) {
+        if (state.status == ExamRecordStatus.patched ||
+            state.status == ExamRecordStatus.set) {
+          _fetchScores();
 
-    },
-    child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '${widget.subjectName} - ${widget.examMonth}/${widget.examYear}',
-          style: TextStyle(
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: colorScheme.surface,
-        elevation: 1,
-        actions: [
-          BlocBuilder<ExamRecordBloc, ExamRecordState>(
-            builder: (context, examState) {
-              if (examState.scores.isNotEmpty && widget.isPatching) {
-                return IconButton(
-                  icon: Icon(
-                    isUpdateMode ? Icons.cancel : Icons.edit,
-                    color: colorScheme.primary,
-                  ),
-                  onPressed: _toggleUpdateMode,
-                  tooltip: isUpdateMode ? 'Cancel Edit' : 'Edit Scores',
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<EnrollmentBloc, EnrollmentState>(
-        builder: (context, enrollmentState) {
-          if (enrollmentState.status == EnrollmentStatus.loading) {
-            return Center(
-              child: CircularProgressIndicator(color: colorScheme.primary),
-            );
-          }
-
-          final students = enrollmentState.enrollments;
-          if (students == null || students.isEmpty) {
-            return Center(
-              child: Text(
-                "No students found",
-                style: TextStyle(color: colorScheme.error),
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.status == ExamRecordStatus.patched
+                    ? 'បន្ទុរពិនិត្យបានកែប្រែដោយជោគជ័យ!'
+                    : 'វាយពិនិត្យបានបង្កើតដោយជោគជ័យ!',
               ),
-            );
-          }
-
-          return BlocBuilder<ExamRecordBloc, ExamRecordState>(
-            builder: (context, examState) {
-              if (examState.status == ExamRecordStatus.loading) {
-                return Center(
-                  child: CircularProgressIndicator(color: colorScheme.primary),
-                );
-              }
-
-              final scores = examState.scores;
-              final scoresExist = scores.isNotEmpty;
-
-              if (!scoresExist) {
-                // Create new scores
-                return Form(
-                  key: _formKey,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: students.length,
-                    itemBuilder: (context, index) {
-                      final student = students[index].student;
-                      return Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: colorScheme.primaryContainer,
-                            child: Icon(
-                              Icons.person,
-                              color: colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                          title: Text(
-                            student.getFullName,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          subtitle: Text(student.studentNumber),
-                          trailing: SizedBox(
-                            width: 100,
-                            child: TextFormField(
-                              keyboardType: TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Score',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                filled: true,
-                                fillColor: colorScheme.surfaceContainerHighest,
-                              ),
-                              onChanged: (value) {
-                                _scoreInputs[student.id] = value;
-                                setState(() {});
-                              },
-                              validator: _validateScore,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else {
-                // Patch existing scores
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: scores.length,
-                  itemBuilder: (context, index) {
-                    final scoreWithStudent = scores[index];
-                    final student = scoreWithStudent.student;
-                    final score = scoreWithStudent.score;
-                    final scoreId = score.scoreId;
-
-                    if (!_controllers.containsKey(scoreId)) {
-                      _controllers[scoreId] = TextEditingController(
-                        text: score.score.toString(),
-                      );
-                    }
-                    final controller = _controllers[scoreId]!;
-
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: colorScheme.primaryContainer,
-                          child: Icon(
-                            Icons.person,
-                            color: colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                        title: Text(
-                          student.getFullName,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text('Score: ${score.score}'),
-                        trailing:
-                            isUpdateMode
-                                ? SizedBox(
-                                  width: 140,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: controller,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                decimal: true,
-                                              ),
-                                          decoration: InputDecoration(
-                                            labelText: 'Edit',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            filled: true,
-                                            fillColor:
-                                                colorScheme
-                                                    .surfaceContainerHighest,
-                                          ),
-                                          onFieldSubmitted: (value) {
-                                            final newScore =
-                                                double.tryParse(value) ?? 0;
-                                            _patchScore(scoreId, newScore);
-                                          },
-                                          validator: _validateScore,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      FilledButton.tonalIcon(
-                                        style: FilledButton.styleFrom(
-                                          minimumSize: const Size(40, 40),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                          backgroundColor:
-                                              colorScheme.errorContainer,
-                                        ),
-                                        icon: const Icon(Icons.clear, size: 20),
-                                        onPressed: () {
-                                          controller.clear();
-                                          _patchScore(scoreId, 0);
-                                        },
-                                        label: const SizedBox.shrink(),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                : null,
-                      ),
-                    );
-                  },
-                );
-              }
-            },
+              backgroundColor: Colors.green,
+            ),
           );
-        },
-      ),
-      floatingActionButton: BlocBuilder<ExamRecordBloc, ExamRecordState>(
-        builder: (context, examState) {
-          final scoresExist = examState.scores.isNotEmpty;
-          final students =
-              context.read<EnrollmentBloc>().state.enrollments ?? [];
-          final allFilled =
-              students.isNotEmpty &&
-              students.every(
-                (e) => _scoreInputs[e.student.id]?.isNotEmpty ?? false,
-              );
-
-          final canSubmit = !scoresExist && allFilled;
-          if (canSubmit) {
-            return FilledButton.icon(
-              icon: const Icon(Icons.save),
-              label: const Text('Save Scores'),
-              style: FilledButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        } else if (state.status == ExamRecordStatus.error) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.errorMessage ?? 'បរាជ័យក្នុងការធ្វេីប្រតិបត្តិការ',
               ),
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  _submitScores(students);
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: ExamScoreAppBar(
+          subjectName: widget.subjectName,
+          examMonth: widget.examMonth,
+          examYear: widget.examYear,
+          isPatching: widget.isPatching,
+          isUpdateMode: isUpdateMode,
+          onToggleUpdateMode: _toggleUpdateMode,
+        ),
+        body: BlocBuilder<EnrollmentBloc, EnrollmentState>(
+          builder: (context, enrollmentState) {
+            if (enrollmentState.status == EnrollmentStatus.loading) {
+              return const LoadingIndicator();
+            }
+
+            final students = enrollmentState.enrollments;
+            if (students == null || students.isEmpty) {
+              return const EmptyStudentsView();
+            }
+
+            return BlocBuilder<ExamRecordBloc, ExamRecordState>(
+              builder: (context, examState) {
+                if (examState.status == ExamRecordStatus.loading) {
+                  return const LoadingIndicator();
+                }
+
+                final scores = examState.scores;
+                final scoresExist = scores.isNotEmpty;
+
+                if (!scoresExist) {
+                  return CreateScoresForm(
+                    formKey: _formKey,
+                    students: students,
+                    onScoreChanged: (studentId, value) {
+                      _scoreInputs[studentId] = value;
+                      setState(() {});
+                    },
+                    validateScore: _validateScore,
+                  );
+                } else {
+                  return UpdateScoresList(
+                    scores: scores,
+                    isUpdateMode: isUpdateMode,
+                    controllers: _controllers,
+                    onPatchScore: _patchScore,
+                    validateScore: _validateScore,
+                  );
                 }
               },
             );
-          }
-          return const SizedBox.shrink();
-        },
+          },
+        ),
+        floatingActionButton: SaveScoresButton(
+          onSubmit:
+              () => _submitScores(
+                context.read<EnrollmentBloc>().state.enrollments ?? [],
+              ),
+          formKey: _formKey,
+          scoreInputs: _scoreInputs,
+        ),
       ),
-    )
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -59,51 +59,36 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-    // final color = theme.colorScheme;
-
     return BaseScreen(
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<ClassBloc>().add(const FetchClasses());
         },
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: ListView(
-                children: [
-                  SizedBox(
-                    height: 220,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocBuilder<ClassBloc, ClassState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case ClassStatus.loading:
+                  return const LoadingState();
 
-                    child: BlocBuilder<ClassBloc, ClassState>(
-                      builder: (context, state) {
-                        switch (state.status) {
-                          case ClassStatus.loading:
-                            return const LoadingState();
+                case ClassStatus.error:
+                  return ErrorState(
+                    errorMessage: state.errorMessage.toString(),
+                  );
 
-                          case ClassStatus.error:
-                            return ErrorState(
-                              errorMessage: state.errorMessage.toString(),
-                            );
+                case ClassStatus.loaded:
+                  final classes = state.classes;
+                  if (classes == null || classes.isEmpty) {
+                    return const EmptyState();
+                  }
+                  return _buildClassList(classes); // Takes full height
 
-                          case ClassStatus.loaded:
-                            final classes = state.classes;
-                            if (classes == null || classes.isEmpty) {
-                              return const EmptyState();
-                            }
-                            return _buildClassList(classes);
-
-                          case ClassStatus.initial:
-                            return const SizedBox();
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                case ClassStatus.initial:
+                  return const SizedBox();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -111,15 +96,14 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
 
   Widget _buildClassList(List<Class> classes) {
     return ListView.separated(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       itemCount: classes.length,
-      separatorBuilder: (_, __) => const SizedBox(width: 12),
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (_, index) {
         final session = classes[index];
-
         return SuggestedClassCard(
           classGrade: session.subjectLevel.name ?? 'N/A',
-          classSubject: session.subject.subjectName,
+          classSubject: session.subject.subjectName.toUpperCase(),
           totalStudents: (session.studentCount ?? 0).toString(),
           onTap: () {
             navigatorController.pushToCurrentTab(
@@ -129,8 +113,7 @@ class _EvaluationScreenState extends State<EvaluationScreen> {
                 subjectName: session.subject.subjectName,
                 subjectLevelId: session.subjectLevel.getId,
                 subjectLevelName: session.subjectLevel.name ?? 'N/A',
-              )
-
+              ),
             );
           },
         );

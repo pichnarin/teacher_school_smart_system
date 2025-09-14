@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pat_asl_portal/bloc/exam_record/exam_record_event.dart';
 import 'package:pat_asl_portal/bloc/exam_record/exam_record_state.dart';
@@ -54,6 +55,10 @@ class ExamRecordBloc extends Bloc<ExamRecordEvent, ExamRecordState> {
         event.classId,
         event.setExamScoresDto,
       );
+
+      // debugPrint("From bloc");
+      // debugPrint(event.classId);
+      // debugPrint(event.setExamScoresDto.toString());
 
       // Then fetch updated scores with filter
       final scores = await _recordService.getExamScores(

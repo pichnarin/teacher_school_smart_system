@@ -2,9 +2,63 @@ import 'package:flutter/material.dart';
 import '../../../data/model/session.dart';
 import 'package:intl/intl.dart';
 
+enum ClassSessionStatus { scheduled, inProgress, completed, unknown }
+
+extension ClassSessionStatusKhmer on ClassSessionStatus {
+  String get khmer {
+    switch (this) {
+      case ClassSessionStatus.scheduled:
+        return 'រង់ចាំ';
+      case ClassSessionStatus.inProgress:
+        return 'កំពុងដំណើរការ';
+      case ClassSessionStatus.completed:
+        return 'បញ្ចប់';
+      default:
+        return 'មិនស្គាល់';
+    }
+  }
+}
+
+ClassSessionStatus statusFromString(String? status) {
+  switch (status?.toLowerCase()) {
+    case 'scheduled':
+      return ClassSessionStatus.scheduled;
+    case 'in_progress':
+      return ClassSessionStatus.inProgress;
+    case 'completed':
+      return ClassSessionStatus.completed;
+    default:
+      return ClassSessionStatus.unknown;
+  }
+}
+
+final Map<String, String> khmerMonths = {
+  'January': 'មករា',
+  'February': 'កុម្ភៈ',
+  'March': 'មីនា',
+  'April': 'មេសា',
+  'May': 'ឧសភា',
+  'June': 'មិថុនា',
+  'July': 'កក្កដា',
+  'August': 'សីហា',
+  'September': 'កញ្ញា',
+  'October': 'តុលា',
+  'November': 'វិច្ឆិកា',
+  'December': 'ធ្នូ',
+};
+
+String formatDateToKhmer(String dateStr) {
+  final date = DateTime.parse(dateStr);
+  final formatted = DateFormat('MMMM d, y').format(date); // e.g., August 15, 2025
+  final monthEn = DateFormat('MMMM').format(date);
+  final monthKh = khmerMonths[monthEn] ?? monthEn;
+  return formatted.replaceFirst(monthEn, monthKh);
+}
+
 class SuggestedClassCard extends StatelessWidget {
   final SessionType? sessionType;
   final String? classGrade;
+  final String? roomName;
   final String? classSubject;
   final DateTime? classDate;
   final String? startTime;
@@ -18,6 +72,7 @@ class SuggestedClassCard extends StatelessWidget {
     super.key,
     this.sessionType,
     this.classGrade,
+    this.roomName,
     this.classSubject,
     this.classDate,
     this.startTime,
@@ -41,141 +96,143 @@ class SuggestedClassCard extends StatelessWidget {
     }
   }
 
-  Widget _buildStatusBadge() {
-    if (status == null) return const SizedBox.shrink();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getStatusColor(status!).withAlpha((0.1 * 255).round()),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _getStatusColor(status!)),
+Widget _buildStatusBadge() {
+  if (status == null) return const SizedBox.shrink();
+  final color = _getStatusColor(status!);
+  final khmerStatus = statusFromString(status).khmer;
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: color),
+    ),
+    child: Text(
+      khmerStatus,
+      style: TextStyle(
+        color: color,
+        fontWeight: FontWeight.bold,
+        fontSize: 11,
       ),
-      child: Text(
-        status!.replaceAll('_', ' ').toUpperCase(),
-        style: TextStyle(
-          color: _getStatusColor(status!),
-          fontWeight: FontWeight.bold,
-          fontSize: 11,
-        ),
+    ),
+  );
+}
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.grey),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 13),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate =
-        classDate != null ? DateFormat.yMMMMd().format(classDate!) : 'N/A';
+    final formattedDate = classDate != null
+        ? formatDateToKhmer(classDate!.toIso8601String())
+        : 'N/A';
 
     return Card(
-      elevation: 6,
+      elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: 260,
+        child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!statusAtBottom)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
+              // Header Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
                       sessionType?.name ?? 'Session',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.blue.shade800,
                         fontSize: 14,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Row(
-                      children: [
-                        if (status != null) _buildStatusBadge(),
-                        const SizedBox(width: 8),
-                        Icon(Icons.class_, color: Colors.blue.shade300),
-                      ],
-                    ),
-                  ],
-                )
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      sessionType?.name ?? 'Session',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade800,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Icon(Icons.class_, color: Colors.blue.shade300),
-                  ],
-                ),
+                  ),
+                  Row(
+                    children: [
+                      if (!statusAtBottom && status != null)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: _buildStatusBadge(),
+                        ),
+                      Icon(Icons.class_, color: Colors.blue.shade300),
+                    ],
+                  ),
+                ],
+              ),
 
-              const SizedBox(height: 8),
-
-              if (classSubject != null)
+              if (classSubject != null) ...[
+                const SizedBox(height: 8),
                 Text(
-                  classSubject!,
+                  'មុខវិជ្ជា: $classSubject',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              Text(
-                'Grade: ${classGrade ?? 'N/A'}',
-                style: const TextStyle(fontSize: 14, color: Colors.black87),
-              ),
+              ],
+
+              if (classGrade != null || roomName != null) ...[
+                const SizedBox(height: 4),
+                if (classGrade != null)
+                  Text(
+                    'កំរិត: ${classGrade ?? 'N/A'}',
+                    style:
+                    const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                if (roomName != null && roomName!.trim().isNotEmpty)
+                  Text(
+                    'បន្ទប់: $roomName',
+                    style:
+                    const TextStyle(fontSize: 14, color: Colors.black87),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
 
               const SizedBox(height: 12),
 
-              Row(
-                children: [
-                  const Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(formattedDate, style: const TextStyle(fontSize: 13)),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${startTime ?? '--:--'} - ${endTime ?? '--:--'}',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
-              ),
+              // Date & Time Rows
+              if (classDate != null)
+                _buildInfoRow(Icons.calendar_today, formattedDate),
+              if (startTime != null && endTime != null)
+                _buildInfoRow(Icons.access_time, '$startTime - $endTime'),
 
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  const Icon(Icons.group, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Text(
-                    (totalStudents == null || totalStudents == '0')
-                        ? 'មិនមានសិស្ស'
-                        : '$totalStudents students enrolled',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
+              // Students
+              _buildInfoRow(
+                Icons.group,
+                (totalStudents == null || totalStudents == '0')
+                    ? 'មិនមានសិស្ស'
+                    : 'សិស្ស $totalStudents នាក់',
               ),
 
               if (statusAtBottom && status != null) ...[
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [_buildStatusBadge()],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: _buildStatusBadge(),
                 ),
               ],
             ],

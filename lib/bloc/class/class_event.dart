@@ -50,3 +50,6 @@ class FetchStudentReport extends ClassEvent {
   List<Object?> get props => [classId, reportMonth, reportYear];
 }
 
+
+
+

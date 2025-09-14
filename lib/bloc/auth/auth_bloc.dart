@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(state.copyWith(
           status: AuthStatus.unauthenticated,
-          errorMessage: 'Session expired. Please log in again.',
+          errorMessage: 'សម័យបានផុតកំណត់។ សូមចូលម្តងទៀត។',
           clearUser: true,
           isLoading: false,
         ));
@@ -44,7 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(state.copyWith(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Authentication check failed: ${e.toString()}',
+        errorMessage: 'ការត្រួតពិនិត្យការផ្ទៀងផ្ទាត់ត្រូវបានបរាជ័យ: ${e.toString()}',
         clearUser: true,
         isLoading: false,
       ));
@@ -110,12 +110,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true, clearError: true));
 
     try {
-      await _authService.initiateLogin(event.username, event.password);
-      emit(state.copyWith(
-        status: AuthStatus.awaitingOtp,
-        successMessage: 'OTP resent successfully. Please check your email.',
-        isLoading: false,
-      ));
+      final result = await _authService.initiateLogin(event.username, event.password);
+
+      // Only emit successMessage if resend succeeded
+      if (result != null) {
+        emit(state.copyWith(
+          status: AuthStatus.awaitingOtp, // keep user in OTP step
+          successMessage: 'OTP បានផ្ញើម្តងទៀតដោយជោគជ័យ។ សូមពិនិត្យអ៊ីមែលរបស់អ្នក។',
+          isLoading: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: AuthStatus.awaitingOtp,
+          errorMessage: 'បរាជ័យក្នុងការផ្ញើ OTP ម្តងទៀត។ សូមព្យាយាមម្តងទៀត។',
+          isLoading: false,
+        ));
+      }
     } catch (e) {
       emit(state.copyWith(
         status: AuthStatus.awaitingOtp,
@@ -124,6 +134,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
     }
   }
+
 
   void _onTokenRefreshRequested(
       TokenRefreshRequested event,
@@ -143,7 +154,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(state.copyWith(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Session expired. Please log in again.',
+        errorMessage: 'សម័យបានផុតកំណត់។ សូមចូលម្តងទៀត។',
         clearUser: true,
         isLoading: false,
       ));

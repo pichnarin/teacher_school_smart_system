@@ -60,8 +60,6 @@ class EnrollmentBloc extends Bloc<EnrollmentEvent, EnrollmentState> {
         event.attendanceDTO,
       );
 
-      debugPrint("Attendance submission result: $result");
-
       if (result) {
         // Update local attendance records map
         final Map<String, String> updatedRecords = {

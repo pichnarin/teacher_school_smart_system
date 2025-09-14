@@ -77,11 +77,12 @@ class ProfileScreen extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 46,
                     backgroundColor: Colors.grey[300],
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.grey,
-                    ),
+                    backgroundImage: AssetImage('assets/design_properties/pich_narin_avatar.jpg'),
+                    // child: const Icon(
+                    //   Icons.person,
+                    //   size: 50,
+                    //   color: Colors.grey,
+                    // ),
                   ),
                 ),
                 Positioned(
@@ -104,19 +105,11 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'John Doe',
+              'ណារិន ពេជ្រ',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Mathematics Teacher',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.9),
               ),
             ),
             const SizedBox(height: 8),
@@ -145,7 +138,7 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(title: 'Profile Information'),
+        const SectionHeader(title: 'ព័ត៌មានផ្ទាល់ខ្លួន'),
         const SizedBox(height: 12),
         Card(
           elevation: 4,
@@ -158,36 +151,36 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 _buildInfoRow(
                   icon: Icons.email,
-                  label: 'Email',
-                  value: 'john.doe@school.com',
+                  label: 'អ៊ីម៉ែល',
+                  value: 'pichnarin893@gmail.com',
                   color: Colors.blue,
                 ),
                 const Divider(),
                 _buildInfoRow(
                   icon: Icons.phone,
-                  label: 'Phone',
-                  value: '+1 (555) 123-4567',
+                  label: 'លេខទូរស័ព្ទ',
+                  value: '+855 179 33 38',
                   color: Colors.green,
                 ),
                 const Divider(),
                 _buildInfoRow(
                   icon: Icons.badge,
-                  label: 'Employee ID',
+                  label: 'លេខសម្គាល់',
                   value: 'TCH001',
                   color: Colors.orange,
                 ),
                 const Divider(),
                 _buildInfoRow(
                   icon: Icons.business,
-                  label: 'Department',
-                  value: 'Mathematics',
+                  label: 'តួនាទី',
+                  value: 'គណិតវិទ្យា, ភាសាអង់គ្លេស',
                   color: Colors.purple,
                 ),
                 const Divider(),
                 _buildInfoRow(
                   icon: Icons.calendar_today,
-                  label: 'Join Date',
-                  value: 'January 15, 2020',
+                  label: 'ថ្ងៃខែឆ្នាំចូលធ្វើការ',
+                  value: 'មិថុនា 13, 2025',
                   color: Colors.teal,
                 ),
               ],
@@ -202,7 +195,7 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(title: 'Settings'),
+        const SectionHeader(title: 'ការកំណត់'),
         const SizedBox(height: 12),
         Card(
           elevation: 4,
@@ -215,32 +208,32 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 _buildSettingsItem(
                   icon: Icons.edit,
-                  title: 'Edit Profile',
-                  subtitle: 'Update your personal information',
+                  title: 'កែប្រែព័ត៌មានផ្ទាល់ខ្លួន',
+                  subtitle: '',
                   onTap: () {
                     // Handle edit profile
                   },
                 ),
                 _buildSettingsItem(
                   icon: Icons.lock,
-                  title: 'Change Password',
-                  subtitle: 'Update your account password',
+                  title: 'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
+                  subtitle: 'ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់គណនីរបស់អ្នក។',
                   onTap: () {
                     // Handle change password
                   },
                 ),
                 _buildSettingsItem(
                   icon: Icons.notifications,
-                  title: 'Notifications',
-                  subtitle: 'Manage notification preferences',
+                  title: 'ការជូនដំណឹង',
+                  subtitle: 'គ្រប់គ្រងចំណូលចិត្តការជូនដំណឹង',
                   onTap: () {
                     // Handle notifications
                   },
                 ),
                 _buildSettingsItem(
                   icon: Icons.language,
-                  title: 'Language',
-                  subtitle: 'Change app language',
+                  title: 'ភាសា',
+                  subtitle: 'ផ្លាស់ប្តូរភាសាកម្មវិធី',
                   onTap: () {
                     // Handle language change
                   },
@@ -270,7 +263,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 _buildSettingsItem(
                   icon: Icons.info,
-                  title: 'App Version',
+                  title: 'កំណែកម្មវិធី',
                   subtitle: '1.0.0',
                   onTap: () {
                     // Handle app version info
@@ -278,16 +271,16 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 _buildSettingsItem(
                   icon: Icons.help,
-                  title: 'Help & Support',
-                  subtitle: 'Get help and contact support',
+                  title: 'ជំនួយ',
+                  subtitle: 'ទទួលជំនួយ និងទាក់ទងជំនួយ',
                   onTap: () {
                     // Handle help and support
                   },
                 ),
                 _buildSettingsItem(
                   icon: Icons.privacy_tip,
-                  title: 'Privacy Policy',
-                  subtitle: 'Read our privacy policy',
+                  title: 'គោលការណ៍ឯកជនភាព',
+                  subtitle: 'សូមអានគោលការណ៍ឯកជនភាពរបស់យើង។',
                   onTap: () {
                     // Handle privacy policy
                   },

@@ -39,7 +39,7 @@ class WelcumBanner extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'You have $amountOfTasks tasks today.',
+            'ថ្ងែនេះអ្នកមានថ្នាក់បង្រៀនចំនួន $amountOfTasks.',
             style: const TextStyle(
               fontSize: 16,
               color: Colors.white,

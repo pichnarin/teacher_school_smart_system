@@ -24,7 +24,7 @@ class NavigatorController extends GetxController {
     TabNavigator(index: 0, child: HomeScreen()),
     TabNavigator(index: 1, child: RecordScreen()),
     TabNavigator(index: 2, child: ScheduleScreen()),
-    TabNavigator(index: 3, child: Container(color: Colors.purple)),
+    // TabNavigator(index: 3, child: Container(color: Colors.purple)),
     TabNavigator(index: 4, child: ProfileScreen()),
   ];
 }

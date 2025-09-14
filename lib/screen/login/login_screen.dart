@@ -101,9 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 );
 
-                // context.read<AuthBloc>().emit(
-                //   state.copyWith(clearSuccess: true),
-                // );
+                context.read<AuthBloc>().emit(state.copyWith(clearSuccess: true));
               }
 
               if (state.isAuthenticated) {

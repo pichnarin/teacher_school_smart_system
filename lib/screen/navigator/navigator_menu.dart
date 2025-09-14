@@ -46,8 +46,8 @@ class NavigatorMenu extends StatelessWidget {
                   icon: Icon(Icons.account_tree_outlined), label: 'កំណត់ត្រា'),
               NavigationDestination(
                   icon: Icon(Icons.schedule_outlined), label: 'កាលបរិច្ឆេទ'),
-              NavigationDestination(
-                  icon: Icon(Icons.chat_outlined), label: 'សារប្រតិបត្តិការ'),
+              // NavigationDestination(
+              //     icon: Icon(Icons.chat_outlined), label: 'សារប្រតិបត្តិការ'),
               NavigationDestination(
                   icon: Icon(Icons.person_outline), label: 'គណនី'),
             ],
